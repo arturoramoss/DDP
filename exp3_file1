@@ -1,0 +1,1297 @@
+		
+rm(list=ls())
+
+DIR<-"C:/Users/and2/Documents/Score de Cheques/Datos Nuevos"
+DIR1<-"C:/Users/and2/Documents/Score de Cheques/Datos Nuevos/Sanity_Check.RData"
+
+setwd(DIR)
+source("//clentb.eis.equifax.com/desarrollo modelos/Paraguay/Archivos R scoring/tbl_performance.r")  
+source("//clentb.eis.equifax.com/desarrollo modelos/Paraguay/Archivos R scoring/tbl_performance_PON.r")  
+library(Hmisc)
+source("//clentb.eis.equifax.com/desarrollo modelos/Paraguay/Archivos R scoring/iv_gain.r") 
+
+# CSV1<-read.csv(file="CSV1.csv", header=TRUE , sep=",", dec=".", fill=TRUE)
+# dim(CSV1) #120000  5
+# names(CSV1) 
+# # [1] "PERSONAS_ID"       "DOCUMENTO"         "FECHA_ORIGINACION" "TARGET"            "inf_id"    
+# CSV1$PERSONAS_ID<-NULL
+# CSV1$DOCUMENTO<-NULL
+# CSV1$doble<-duplicated(CSV1$inf_id)
+# xx<-CSV1$inf_id[CSV1$doble=="TRUE"]
+# xxu<-xx[!duplicated(xx)]
+# CSV1<-CSV1[!(CSV1$inf_id %in% xxu),]
+# CSV1$doble<-NULL
+# dim(CSV1) # 120000  3
+
+# CSV2<-read.csv(file="CSV2.csv", header=TRUE , sep=",", dec=".", fill=TRUE)
+# dim(CSV2) # 189608   171
+# names(CSV2)
+# # [1] "inf_id"                         "inf_ficha"                      "inf_documento"                  "inf_fecha_solicitud"           
+  # # [5] "inf_fecha_nac"                  "edad"                           "inf_faja_score"                 "inf_es_trab_autonomo"          
+  # # [9] "inf_tuvo_cons"                  "inf_cons_cant_total"            "inf_cons_cant_u1m"              "inf_cons_cant_u3m"          
+# CSV2$doble<-duplicated(CSV2$inf_id)
+# xx<-CSV2$inf_id[CSV2$doble=="TRUE"]
+# xxu<-xx[!duplicated(xx)]
+# CSV2<-CSV2[!(CSV2$inf_id %in% xxu),]
+# CSV2$doble<-NULL
+# dim(CSV2) #189608   171
+
+# CSV3<-read.csv(file="CSV3.csv", header=TRUE , sep=",", dec=".", fill=TRUE)
+# dim(CSV3) #190356  38
+# names(CSV3) 
+# # [1] "inf_id"                  "PERSONAS_ID"             "DOCUMENTO"               "NOMBRES"                 "APELLIDOS"              
+ # # [6] "SITUACION_BANCARIA"      "FECHA_OPERACION"         "CANT_SUSP_ACTIVAS"       "PEOR_TIPO_FALTA"         "PRI_FECHA_INF"          
+# # [11] "ULT_FECHA_INF"           "CANT_INHAB_HIST"         "CANT_INHAB_DIST"         "MAX_INHAB_ENT"           "PEOR_TIPO_FALTA_HIST"   
+# # [16] "PRI_FECHA_INF_HIST"      "ULT_FECHA_INF_HIST"      "CONS_CANT_TOTAL"         "CONS_CANT_DIST_ENT"      "CONS_CANT_MAX_ENT"      
+# # [21] "FECHA_PRI_CONS"          "FECHA_PRI_CONS_BANCO"    "FECHA_PRI_CONS_FINAN"    "FECHA_PRI_CONS_PROC_TAR" "FECHA_PRI_CONS_COOP"    
+# # [26] "FECHA_PRI_CONS_COMERCIO" "FECHA_ULT_CONS"          "FECHA_ULT_CONS_BANCO"    "FECHA_ULT_CONS_FINAN"    "FECHA_ULT_CONS_PROC_TAR"
+# # [31] "FECHA_ULT_CONS_COOP"     "FECHA_ULT_CONS_COMERCIO" "CONS_CANT_BANCO"         "CONS_CANT_FINAN"         "CONS_CANT_PROC_TAR"     
+# # [36] "CONS_CANT_COOP"          "CONS_CANT_COMERCIO"      "SDN"                    
+
+# CSV3$PERSONAS_ID<-NULL
+# CSV3$DOCUMENTO<-NULL
+# CSV3$NOMBRES<-NULL
+# CSV3$APELLIDOS<-NULL
+
+# CSV3$doble<-duplicated(CSV3$inf_id)
+# xx<-CSV3$inf_id[CSV3$doble=="TRUE"]
+# xxu<-xx[!duplicated(xx)]
+# CSV3<-CSV3[!(CSV3$inf_id %in% xxu),]
+# CSV3$doble<-NULL
+# dim(CSV3) # 189872  34
+
+
+# CSV4<-read.csv(file="CSV4.csv", header=TRUE , sep=",", dec=".", fill=TRUE)
+# dim(CSV4) #120078  284
+# names(CSV4) 
+ # # [1] "inf_id"                             "PERSONAS_ID"                    "FECHA"                          "CH_RE_PRIM_FECH"               
+  # # [5] "CH_RE_ULT_FECH"                 "CH_RE_CANT_TOTAL"               "CH_RE_CANT_GIRO"                "CH_RE_CANT_I_FOND"             
+  # # [9] "CH_RE_CANT_DEF_F"               "CH_RE_CANT_NO_IMPUT"            "CH_RE_CANT_U1M"                 "CH_RE_CANT_U3M"                
+ # # [13] "CH_RE_CANT_U6M"                 "CH_RE_GIRO_U1M"                 "CH_RE_I_FOND_U1M"               "CH_RE_DEF_F_U1M"               
+ # # [17] "CH_RE_GIRO_U3M"                 "CH_RE_I_FOND_U3M"               "CH_RE_DEF_F_U3M"                "CH_RE_GIRO_U6M"                
+ # # [21] "CH_RE_I_FOND_U6M"               "CH_RE_DEF_F_U6M"                "CH_RE_CANT_GS"                  "CH_RE_GIRO_GS"                 
+ # # [25] "CH_RE_I_FOND_GS"                "CH_RE_DEF_F_GS"                 "CH_RE_CANT_OT_MON"              "CH_RE_DEF_F_OT_MON"   
+ 
+# CSV4$PERSONAS_ID<-NULL
+
+# CSV4$doble<-duplicated(CSV4$inf_id)
+# yy<-CSV4$inf_id[CSV4$doble=="TRUE"]
+# yyu<-yy[!duplicated(yy)]
+# CSV4<-CSV4[!(CSV4$inf_id %in% yyu),]
+# CSV4$doble<-NULL
+# dim(CSV4)  # 119919  283
+
+# datos<-merge(merge(merge(CSV1,CSV2,by.x="inf_id",by.y="inf_id"),CSV3,by.x="inf_id",by.y="inf_id"),CSV4,by.x="inf_id",by.y="inf_id")
+# dim(datos) # 119775  488
+# names(datos)
+# [1] "inf_id"                         "FECHA_ORIGINACION"              "TARGET"                         "inf_ficha"                     
+  # [5] "inf_documento"                  "inf_fecha_solicitud"            "inf_fecha_nac"                  "edad"                          
+  # [9] "inf_faja_score"                 "inf_es_trab_autonomo"           "inf_tuvo_cons"                  "inf_cons_cant_total"           
+ # [13] "inf_cons_cant_u1m"              "inf_cons_cant_u3m"              "inf_cons_cant_u6m"              "inf_cons_cant_u12m"            
+ # [17] "inf_cons_cant_u24m"             "inf_cons_cant_total_cable"      "inf_cons_cant_cable_u1m"        "inf_cons_cant_cable_u3m"       
+ # [21] "inf_cons_cant_cable_u6m"        "inf_cons_cant_cable_u12m"       "inf_cons_cant_cable_u24m"       "inf_cons_cant_total_comercio"  
+ # [25] "inf_cons_cant_comercio_u1m"     "inf_cons_cant_comercio_u3m"     "inf_cons_cant_comercio_u6m"     "inf_cons_cant_comercio_u12m"   
+ # [29] "inf_cons_cant_comercio_u24m"    "inf_cons_cant_total_ccredito"   "inf_cons_cant_ccredito_u1m"     "inf_cons_cant_ccredito_u3m"    
+ # [33] "inf_cons_cant_ccredito_u6m"     "inf_cons_cant_ccredito_u12m"    "inf_cons_cant_ccredito_u24m"    "inf_cons_cant_total_otros"  
+
+# datos$doble<-duplicated(datos$inf_id)
+# datos$inf_id[datos$doble=="TRUE"]
+# #integer(0)
+# write.table(datos,file="Base_Cheques_V2.csv", append=TRUE,sep=",", dec=".", row.names =FALSE, col.names = TRUE)
+
+datos<-read.csv(file="Base_Cheques_V2.csv", header=TRUE , sep=",", dec=".", fill=TRUE)
+dim(datos) # 11977  487 
+table(datos$TARGET)
+    # 0     1 
+ # 69948  49827 
+
+
+###Quito variables que no voy a usar ############
+datos$inf_gs_x_dol	<- NULL
+ datos$inf_morce_sal_abie_gs	<- NULL
+ datos$inf_morce_sal_abie_dol	<- NULL
+ datos$inf_morce_sal_abie_sf_gs	<- NULL
+ datos$inf_morce_sal_abie_sf_dol	<- NULL
+ datos$inf_morce_sal_abie_ccredito_gs	<- NULL
+ datos$inf_morce_sal_abie_ccredito_do	<- NULL
+ datos$inf_morce_sal_abie_spub_gs	<- NULL
+ datos$inf_morce_sal_abie_spub_dol	<- NULL
+ datos$inf_morce_sal_abie_cable_gs	<- NULL
+ datos$inf_morce_sal_abie_cable_dol	<- NULL
+ datos$inf_morce_sal_abie_telco_gs	<- NULL
+ datos$inf_morce_sal_abie_telco_dol	<- NULL
+datos$inf_morce_sal_abie_comercio_gs	<- NULL
+ datos$inf_morce_sal_abie_comercio_do	<- NULL
+datos$inf_morce_sal_abie_otros_gs	<- NULL
+ datos$inf_morce_sal_abie_otros_dol	<- NULL
+datos$inf_mor_sal_abier_gs	<- NULL
+datos$inf_mor_sal_abier_dol<- NULL
+datos$inf_mor_sal_abier_sf_gs<- NULL
+datos$inf_mor_sal_abier_sf_dol<- NULL
+datos$inf_mor_sal_abier_ccredito_gs<- NULL
+datos$inf_mor_sal_abier_ccredito_dol <- NULL
+datos$inf_mor_sal_abier_spub_gs<- NULL
+datos$inf_mor_sal_abier_spub_dol<- NULL
+datos$inf_mor_sal_abier_cable_gs<- NULL
+datos$inf_mor_sal_abier_cable_dol<- NULL
+datos$inf_mor_sal_abier_telco_gs<- NULL
+datos$inf_mor_sal_abier_telco_dol<- NULL
+ datos$inf_mor_sal_abier_comercio_gs<- NULL
+ datos$inf_mor_sal_abier_comercio_dol<- NULL
+datos$inf_mor_sal_abier_otros_gs<- NULL
+ datos$inf_mor_sal_abier_otros_dol<- NULL
+datos$tuvo_morosidad <- NULL
+datos$doble<-NULL
+datos$SDN<-NULL
+
+dim(datos)
+#  119775  451
+
+
+####### Formatear variables
+
+for(i in 1:dim(datos)[2]) # para ver quÃ© clase le adjudicÃ³ el r a cada variable
+{a <- c(class(datos[,i]),names(datos)[i],i)
+  print.table(a)}
+
+	#fechas
+	fechas<-c(2,6,139,142,143,148,149,153:164,170:172,254,255,378:383)
+	for (i in fechas){
+	datos[,i]<- as.Date(datos[,i],format="%d/%m/%Y")
+	}	
+	#cuantitativas
+	# cuan<-c(7)
+	# for (i in cuan){
+	# datos[,i]<- as.integer(as.character(datos[,i]))
+	# }
+
+#cualitativas
+	cual<-c(8,9,58:92,137,138,141,147)
+	for (i in cual){
+	datos[,i]<- as.factor(datos[,i])
+	}
+### capping 
+
+summary(datos[datos$TARGET==1,])
+ # inf_id       FECHA_ORIGINACION        TARGET    inf_ficha       inf_documento   inf_fecha_solicitud       edad        inf_es_trab_autonomo inf_tuvo_cons
+ # Min.   :300000   Min.   :2012-08-03   Min.   :1   Min.   :     25   1293121:  102   Min.   :2012-08-03   Min.   : 19.00   0:42844              0:   15      
+ # 1st Qu.:312512   1st Qu.:2013-03-05   1st Qu.:1   1st Qu.: 389030   3783198:   81   1st Qu.:2013-03-05   1st Qu.: 33.00   1: 6983              1:49812      
+ # Median :325013   Median :2013-09-24   Median :1   Median :1035717   5791188:   56   Median :2013-09-24   Median : 41.00                                     
+ # Mean   :325008   Mean   :2013-09-09   Mean   :1   Mean   :1840662   3655379:   54   Mean   :2013-09-09   Mean   : 42.61                                     
+ # 3rd Qu.:337506   3rd Qu.:2014-03-14   3rd Qu.:1   3rd Qu.:3508403   2128110:   51   3rd Qu.:2014-03-14   3rd Qu.: 51.00                                     
+ # Max.   :349999   Max.   :2014-09-29   Max.   :1   Max.   :5669688   743056 :   49   Max.   :2014-09-29   Max.   :101.00                                     
+                                                                     # (Other):49434                                                                           
+ # inf_cons_cant_total inf_cons_cant_u1m inf_cons_cant_u3m inf_cons_cant_u6m inf_cons_cant_u12m inf_cons_cant_u24m inf_cons_cant_total_cable inf_cons_cant_cable_u1m
+ # Min.   :  0.00      Min.   : 0.000    Min.   :  0.000   Min.   :  0.00    Min.   :  0.00     Min.   :  0.00     Min.   :0.00000           Min.   :0.0000000      
+ # 1st Qu.: 24.00      1st Qu.: 1.000    1st Qu.:  3.000   1st Qu.:  5.00    1st Qu.: 10.00     1st Qu.: 18.00     1st Qu.:0.00000           1st Qu.:0.0000000      
+ # Median : 42.00      Median : 2.000    Median :  6.000   Median : 11.00    Median : 19.00     Median : 32.00     Median :0.00000           Median :0.0000000      
+ # Mean   : 56.83      Mean   : 2.804    Mean   :  8.052   Mean   : 15.07    Mean   : 26.68     Mean   : 44.09     Mean   :0.01357           Mean   :0.0001606      
+ # 3rd Qu.: 74.00      3rd Qu.: 4.000    3rd Qu.: 11.000   3rd Qu.: 20.00    3rd Qu.: 35.00     3rd Qu.: 57.00     3rd Qu.:0.00000           3rd Qu.:0.0000000      
+ # Max.   :368.00      Max.   :58.000    Max.   :133.000   Max.   :216.00    Max.   :247.00     Max.   :279.00     Max.   :4.00000           Max.   :1.0000000      
+                                                                                                                                                                  
+ # inf_cons_cant_cable_u3m inf_cons_cant_cable_u6m inf_cons_cant_cable_u12m inf_cons_cant_cable_u24m inf_cons_cant_total_comercio inf_cons_cant_comercio_u1m
+ # Min.   :0.0000000       Min.   :0.000000        Min.   :0.000000         Min.   :0.000000         Min.   : 0.000               Min.   : 0.0000           
+ # 1st Qu.:0.0000000       1st Qu.:0.000000        1st Qu.:0.000000         1st Qu.:0.000000         1st Qu.: 2.000               1st Qu.: 0.0000           
+ # Median :0.0000000       Median :0.000000        Median :0.000000         Median :0.000000         Median : 5.000               Median : 0.0000           
+ # Mean   :0.0005619       Mean   :0.001786        Mean   :0.003954         Mean   :0.009132         Mean   : 6.882               Mean   : 0.3615           
+ # 3rd Qu.:0.0000000       3rd Qu.:0.000000        3rd Qu.:0.000000         3rd Qu.:0.000000         3rd Qu.: 9.000               3rd Qu.: 1.0000           
+ # Max.   :2.0000000       Max.   :3.000000        Max.   :3.000000         Max.   :3.000000         Max.   :70.000               Max.   :20.0000           
+                                                                                                                                                          
+ # inf_cons_cant_comercio_u3m inf_cons_cant_comercio_u6m inf_cons_cant_comercio_u12m inf_cons_cant_comercio_u24m inf_cons_cant_total_ccredito
+ # Min.   : 0.0000            Min.   : 0.000             Min.   : 0.000              Min.   : 0.000              Min.   : 0.000              
+ # 1st Qu.: 0.0000            1st Qu.: 0.000             1st Qu.: 1.000              1st Qu.: 1.000              1st Qu.: 0.000              
+ # Median : 0.0000            Median : 1.000             Median : 2.000              Median : 4.000              Median : 2.000              
+ # Mean   : 0.9924            Mean   : 1.813             Mean   : 3.171              Mean   : 5.255              Mean   : 4.684              
+ # 3rd Qu.: 1.0000            3rd Qu.: 2.000             3rd Qu.: 4.000              3rd Qu.: 7.000              3rd Qu.: 6.000              
+ # Max.   :38.0000            Max.   :62.000             Max.   :70.000              Max.   :70.000              Max.   :71.000              
+                                                                                                                                           
+ # inf_cons_cant_ccredito_u1m inf_cons_cant_ccredito_u3m inf_cons_cant_ccredito_u6m inf_cons_cant_ccredito_u12m inf_cons_cant_ccredito_u24m inf_cons_cant_total_otros
+ # Min.   :0.0000             Min.   : 0.0000            Min.   : 0.00              Min.   : 0.000              Min.   : 0.000              Min.   : 0.0             
+ # 1st Qu.:0.0000             1st Qu.: 0.0000            1st Qu.: 0.00              1st Qu.: 0.000              1st Qu.: 0.000              1st Qu.: 2.0             
+ # Median :0.0000             Median : 0.0000            Median : 0.00              Median : 1.000              Median : 1.000              Median : 4.0             
+ # Mean   :0.3007             Mean   : 0.8603            Mean   : 1.57              Mean   : 2.641              Mean   : 3.941              Mean   : 6.5             
+ # 3rd Qu.:0.0000             3rd Qu.: 1.0000            3rd Qu.: 2.00              3rd Qu.: 3.000              3rd Qu.: 5.000              3rd Qu.: 9.0             
+ # Max.   :8.0000             Max.   :13.0000            Max.   :21.00              Max.   :36.000              Max.   :62.000              Max.   :86.0             
+                                                                                                                                                                   
+ # inf_cons_cant_otros_u1m inf_cons_cant_otros_u3m inf_cons_cant_otros_u6m inf_cons_cant_otros_u12m inf_cons_cant_otros_u24m inf_cons_cant_total_sf
+ # Min.   : 0.0000         Min.   : 0.000          Min.   : 0.000          Min.   : 0.000           Min.   : 0.000           Min.   :  0.00        
+ # 1st Qu.: 0.0000         1st Qu.: 0.000          1st Qu.: 0.000          1st Qu.: 0.000           1st Qu.: 1.000           1st Qu.: 15.00        
+ # Median : 0.0000         Median : 0.000          Median : 1.000          Median : 2.000           Median : 3.000           Median : 26.00        
+ # Mean   : 0.3614         Mean   : 1.009          Mean   : 1.842          Mean   : 3.149           Mean   : 5.114           Mean   : 36.62        
+ # 3rd Qu.: 0.0000         3rd Qu.: 1.000          3rd Qu.: 3.000          3rd Qu.: 4.000           3rd Qu.: 7.000           3rd Qu.: 48.00        
+ # Max.   :26.0000         Max.   :50.000          Max.   :74.000          Max.   :85.000           Max.   :86.000           Max.   :279.00        
+                                                                                                                                                 
+ # inf_cons_cant_sf_u1m inf_cons_cant_sf_u3m inf_cons_cant_sf_u6m inf_cons_cant_sf_u12m inf_cons_cant_sf_u24m inf_cons_cant_total_spub inf_cons_cant_spub_u1m
+ # Min.   : 0.000       Min.   : 0.000       Min.   : 0.00        Min.   :  0.00        Min.   :  0.00        Min.   :0.0000           Min.   :0.000000      
+ # 1st Qu.: 0.000       1st Qu.: 1.000       1st Qu.: 3.00        1st Qu.:  6.00        1st Qu.: 11.00        1st Qu.:0.0000           1st Qu.:0.000000      
+ # Median : 1.000       Median : 3.000       Median : 7.00        Median : 12.00        Median : 20.00        Median :0.0000           Median :0.000000      
+ # Mean   : 1.706       Mean   : 4.971       Mean   : 9.41        Mean   : 16.89        Mean   : 28.25        Mean   :0.1856           Mean   :0.006322      
+ # 3rd Qu.: 2.000       3rd Qu.: 7.000       3rd Qu.:13.00        3rd Qu.: 22.00        3rd Qu.: 37.00        3rd Qu.:0.0000           3rd Qu.:0.000000      
+ # Max.   :19.000       Max.   :45.000       Max.   :70.00        Max.   :119.00        Max.   :186.00        Max.   :8.0000           Max.   :1.000000      
+                                                                                                                                                           
+ # inf_cons_cant_spub_u3m inf_cons_cant_spub_u6m inf_cons_cant_spub_u12m inf_cons_cant_spub_u24m inf_cons_cant_total_telco inf_cons_cant_telco_u1m
+ # Min.   :0.00000        Min.   :0.00000        Min.   :0.00000         Min.   :0.0000          Min.   : 0.00             Min.   :0.00000        
+ # 1st Qu.:0.00000        1st Qu.:0.00000        1st Qu.:0.00000         1st Qu.:0.0000          1st Qu.: 1.00             1st Qu.:0.00000        
+ # Median :0.00000        Median :0.00000        Median :0.00000         Median :0.0000          Median : 2.00             Median :0.00000        
+ # Mean   :0.01941        Mean   :0.03743        Mean   :0.07215         Mean   :0.1306          Mean   : 1.95             Mean   :0.06749        
+ # 3rd Qu.:0.00000        3rd Qu.:0.00000        3rd Qu.:0.00000         3rd Qu.:0.0000          3rd Qu.: 3.00             3rd Qu.:0.00000        
+ # Max.   :2.00000        Max.   :3.00000        Max.   :4.00000         Max.   :7.0000          Max.   :20.00             Max.   :4.00000        
+                                                                                                                                                
+ # inf_cons_cant_telco_u3m inf_cons_cant_telco_u6m inf_cons_cant_telco_u12m inf_cons_cant_telco_u24m inf_1_o_mas_sol_cable_u6m inf_2_o_mas_sol_cable_u6m
+ # Min.   :0.0000          Min.   :0.0000          Min.   :0.0000           Min.   : 0.000           0:49741                   0:49827                  
+ # 1st Qu.:0.0000          1st Qu.:0.0000          1st Qu.:0.0000           1st Qu.: 0.000           1:   86                                            
+ # Median :0.0000          Median :0.0000          Median :0.0000           Median : 1.000                                                              
+ # Mean   :0.1988          Mean   :0.3927          Mean   :0.7527           Mean   : 1.397                                                              
+ # 3rd Qu.:0.0000          3rd Qu.:1.0000          3rd Qu.:1.0000           3rd Qu.: 2.000                                                              
+ # Max.   :5.0000          Max.   :6.0000          Max.   :8.0000           Max.   :13.000                                                              
+                                                                                                                                                      
+ # inf_3_o_mas_sol_cable_u6m inf_4_o_mas_sol_cable_u6m inf_5_o_mas_sol_cable_u6m inf_1_o_mas_sol_comercio_u6m inf_2_o_mas_sol_comercio_u6m
+ # 0:49827                   0:49827                   0:49827                   0:18330                      0:31295                     
+                                                                               # 1:31497                      1:18532                     
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
+ # inf_3_o_mas_sol_comercio_u6m inf_4_o_mas_sol_comercio_u6m inf_5_o_mas_sol_comercio_u6m inf_1_o_mas_sol_ccredito_u6m inf_2_o_mas_sol_ccredito_u6m
+ # 0:38973                      0:43350                      0:45954                      0:25680                      0:37984                     
+ # 1:10854                      1: 6477                      1: 3873                      1:24147                      1:11843                     
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 
+ # inf_3_o_mas_sol_ccredito_u6m inf_4_o_mas_sol_ccredito_u6m inf_5_o_mas_sol_ccredito_u6m inf_1_o_mas_sol_otros_u6m inf_2_o_mas_sol_otros_u6m
+ # 0:43101                      0:45601                      0:47039                      0:18840                   0:31672                  
+ # 1: 6726                      1: 4226                      1: 2788                      1:30987                   1:18155                  
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+ # inf_3_o_mas_sol_otros_u6m inf_4_o_mas_sol_otros_u6m inf_5_o_mas_sol_otros_u6m inf_1_o_mas_sol_sf_u6m inf_2_o_mas_sol_sf_u6m inf_3_o_mas_sol_sf_u6m
+ # 0:38770                   0:42980                   0:45757                   0: 2170                0: 6104                0:11192               
+ # 1:11057                   1: 6847                   1: 4070                   1:47657                1:43723                1:38635               
+                                                                                                                                                   
+                                                                                                                                                   
+                                                                                                                                                   
+                                                                                                                                                   
+                                                                                                                                                   
+ # inf_4_o_mas_sol_sf_u6m inf_5_o_mas_sol_sf_u6m inf_1_o_mas_sol_spub_u6m inf_2_o_mas_sol_spub_u6m inf_3_o_mas_sol_spub_u6m inf_4_o_mas_sol_spub_u6m
+ # 0:16196                0:20982                0:48066                  0:49793                  0:49827                  0:49827                 
+ # 1:33631                1:28845                1: 1761                  1:   34                                                                   
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+ # inf_5_o_mas_sol_spub_u6m inf_1_o_mas_sol_telco_u6m inf_2_o_mas_sol_telco_u6m inf_3_o_mas_sol_telco_u6m inf_4_o_mas_sol_telco_u6m inf_5_o_mas_sol_telco_u6m
+ # 0:49827                  0:34631                   0:47833                   0:49550                   0:49788                   0:49827                  
+                          # 1:15196                   1: 1994                   1:  277                   1:   39                                            
+                                                                                                                                                           
+                                                                                                                                                           
+                                                                                                                                                           
+                                                                                                                                                           
+                                                                                                                                                           
+ # inf_dem_cant_abiertas_sf inf_dem_cant_abiertas_spub inf_dem_cant_abiertas_telco inf_dem_cant_abiertas_cable inf_dem_cant_abiertas_ccredito
+ # Min.   : 0.00000         Min.   :0.0000000          Min.   :0.000000            Min.   :0                   Min.   :0.000000              
+ # 1st Qu.: 0.00000         1st Qu.:0.0000000          1st Qu.:0.000000            1st Qu.:0                   1st Qu.:0.000000              
+ # Median : 0.00000         Median :0.0000000          Median :0.000000            Median :0                   Median :0.000000              
+ # Mean   : 0.02818         Mean   :0.0002609          Mean   :0.002449            Mean   :0                   Mean   :0.008469              
+ # 3rd Qu.: 0.00000         3rd Qu.:0.0000000          3rd Qu.:0.000000            3rd Qu.:0                   3rd Qu.:0.000000              
+ # Max.   :20.00000         Max.   :1.0000000          Max.   :3.000000            Max.   :0                   Max.   :4.000000              
+                                                                                                                                           
+ # inf_dem_cant_abiertas_comercio inf_dem_cant_abiertas_otros inf_dem_cant_abiertas inf_dem_camt_finiq_u01mes inf_dem_camt_finiq_u02mes inf_dem_camt_finiq_u03mes
+ # Min.   :0.000000               Min.   :0.00000             Min.   : 0.0000       Min.   :0.000000          Min.   :0.000000          Min.   :0.000000         
+ # 1st Qu.:0.000000               1st Qu.:0.00000             1st Qu.: 0.0000       1st Qu.:0.000000          1st Qu.:0.000000          1st Qu.:0.000000         
+ # Median :0.000000               Median :0.00000             Median : 0.0000       Median :0.000000          Median :0.000000          Median :0.000000         
+ # Mean   :0.004074               Mean   :0.01443             Mean   : 0.0983       Mean   :0.001766          Mean   :0.003693          Mean   :0.005479         
+ # 3rd Qu.:0.000000               3rd Qu.:0.00000             3rd Qu.: 0.0000       3rd Qu.:0.000000          3rd Qu.:0.000000          3rd Qu.:0.000000         
+ # Max.   :6.000000               Max.   :5.00000             Max.   :30.0000       Max.   :2.000000          Max.   :2.000000          Max.   :2.000000         
+                                                                                                                                                               
+ # inf_dem_camt_finiq_u04mes inf_dem_camt_finiq_u05mes inf_dem_camt_finiq_u06mes inf_dem_camt_finiq_u09mes inf_dem_camt_finiq_u12mes inf_dem_camt_finiq_u18mes
+ # Min.   :0.000000          Min.   :0.000000          Min.   :0.000000          Min.   :0.00000           Min.   :0.00000           Min.   :0.00000          
+ # 1st Qu.:0.000000          1st Qu.:0.000000          1st Qu.:0.000000          1st Qu.:0.00000           1st Qu.:0.00000           1st Qu.:0.00000          
+ # Median :0.000000          Median :0.000000          Median :0.000000          Median :0.00000           Median :0.00000           Median :0.00000          
+ # Mean   :0.007265          Mean   :0.008509          Mean   :0.009714          Mean   :0.01401           Mean   :0.01877           Mean   :0.02509          
+ # 3rd Qu.:0.000000          3rd Qu.:0.000000          3rd Qu.:0.000000          3rd Qu.:0.00000           3rd Qu.:0.00000           3rd Qu.:0.00000          
+ # Max.   :3.000000          Max.   :3.000000          Max.   :4.000000          Max.   :4.00000           Max.   :5.00000           Max.   :6.00000          
+                                                                                                                                                            
+ # inf_dem_camt_finiq_u24mes inf_dem_camt_finiq_u30mes inf_dem_camt_finiq_u36mes inf_conv_cant_abiertas inf_inhib_cant_abiertas inf_qui_cant_abiertas
+ # Min.   :0.00000           Min.   :0.00000           Min.   :0.00000           Min.   :0.000000       Min.   : 0.00000        Min.   :0.0000000    
+ # 1st Qu.:0.00000           1st Qu.:0.00000           1st Qu.:0.00000           1st Qu.:0.000000       1st Qu.: 0.00000        1st Qu.:0.0000000    
+ # Median :0.00000           Median :0.00000           Median :0.00000           Median :0.000000       Median : 0.00000        Median :0.0000000    
+ # Mean   :0.02884           Mean   :0.02952           Mean   :0.02952           Mean   :0.003191       Mean   : 0.01838        Mean   :0.0001606    
+ # 3rd Qu.:0.00000           3rd Qu.:0.00000           3rd Qu.:0.00000           3rd Qu.:0.000000       3rd Qu.: 0.00000        3rd Qu.:0.0000000    
+ # Max.   :6.00000           Max.   :6.00000           Max.   :6.00000           Max.   :1.000000       Max.   :10.00000        Max.   :2.0000000    
+                                                                                                                                                   
+ # inf_rem_cant_abiertas inf_inc_cant_abiertas inf_mor_cant_abiertas_sf inf_mor_cant_abiertas_spub inf_mor_cant_abiertas_telco inf_mor_cant_abiertas_cable
+ # Min.   :0.000000      Min.   :0.000         Min.   : 0.0000          Min.   :0.000000           Min.   : 0.00000            Min.   :0.0000000          
+ # 1st Qu.:0.000000      1st Qu.:0.000         1st Qu.: 0.0000          1st Qu.:0.000000           1st Qu.: 0.00000            1st Qu.:0.0000000          
+ # Median :0.000000      Median :0.000         Median : 0.0000          Median :0.000000           Median : 0.00000            Median :0.0000000          
+ # Mean   :0.002087      Mean   :0.063         Mean   : 0.1216          Mean   :0.005941           Mean   : 0.05951            Mean   :0.0002408          
+ # 3rd Qu.:0.000000      3rd Qu.:0.000         3rd Qu.: 0.0000          3rd Qu.:0.000000           3rd Qu.: 0.00000            3rd Qu.:0.0000000          
+ # Max.   :8.000000      Max.   :7.000         Max.   :25.0000          Max.   :5.000000           Max.   :20.00000            Max.   :1.0000000          
+                                                                                                                                                        
+ # inf_mor_cant_abiertas_ccredito inf_mor_cant_abiertas_comercio inf_mor_cant_abiertas_otros inf_mor_cant_abiertas inf_mor_max_dias_atraso inf_morce_cant_abiertas_sf
+ # Min.   : 0.00000               Min.   : 0.0000                Min.   : 0.0000             Min.   : 0.0000       Min.   :   0.00         Min.   : 0.0000           
+ # 1st Qu.: 0.00000               1st Qu.: 0.0000                1st Qu.: 0.0000             1st Qu.: 0.0000       1st Qu.:   0.00         1st Qu.: 0.0000           
+ # Median : 0.00000               Median : 0.0000                Median : 0.0000             Median : 0.0000       Median :   0.00         Median : 0.0000           
+ # Mean   : 0.03801               Mean   : 0.0406                Mean   : 0.0354             Mean   : 0.2989       Mean   :  38.24         Mean   : 0.3128           
+ # 3rd Qu.: 0.00000               3rd Qu.: 0.0000                3rd Qu.: 0.0000             3rd Qu.: 0.0000       3rd Qu.:   0.00         3rd Qu.: 0.0000           
+ # Max.   :26.00000               Max.   :24.0000                Max.   :25.0000             Max.   :46.0000       Max.   :3249.00         Max.   :31.0000           
+                                                                                                                                                                   
+ # inf_morce_cant_abiertas_spub inf_morce_cant_abiertas_telco inf_morce_cant_abiertas_cable inf_morce_cant_abiertas_ccredi inf_morce_cant_abiertas_comerc
+ # Min.   :0                    Min.   :0                     Min.   :0                     Min.   :0                      Min.   :0                     
+ # 1st Qu.:0                    1st Qu.:0                     1st Qu.:0                     1st Qu.:0                      1st Qu.:0                     
+ # Median :0                    Median :0                     Median :0                     Median :0                      Median :0                     
+ # Mean   :0                    Mean   :0                     Mean   :0                     Mean   :0                      Mean   :0                     
+ # 3rd Qu.:0                    3rd Qu.:0                     3rd Qu.:0                     3rd Qu.:0                      3rd Qu.:0                     
+ # Max.   :0                    Max.   :0                     Max.   :0                     Max.   :0                      Max.   :0                     
+                                                                                                                                                       
+ # inf_morce_cant_abiertas_otros inf_morce_cant_abiertas inf_morce_max_dias_atraso inconf_morce_cant_dist_afi inf_morce_tuvo_en_u6m SITUACION_BANCARIA
+ # Min.   :0                     Min.   : 0.0000         Min.   : 0.00             Min.   :0.0000             0:20808               1:43902           
+ # 1st Qu.:0                     1st Qu.: 0.0000         1st Qu.: 0.00             1st Qu.:0.0000             1:29019               2: 2190           
+ # Median :0                     Median : 0.0000         Median : 0.00             Median :0.0000                                   5: 3735           
+ # Mean   :0                     Mean   : 0.3128         Mean   : 8.71             Mean   :0.1657                                                     
+ # 3rd Qu.:0                     3rd Qu.: 0.0000         3rd Qu.: 0.00             3rd Qu.:0.0000                                                     
+ # Max.   :0                     Max.   :31.0000         Max.   :93.00             Max.   :1.0000                                                     
+                                                                                                                                                    
+ # FECHA_OPERACION      CANT_SUSP_ACTIVAS PEOR_TIPO_FALTA PRI_FECHA_INF        ULT_FECHA_INF        CANT_INHAB_HIST   CANT_INHAB_DIST   MAX_INHAB_ENT    
+ # Min.   :2012-08-03   Min.   :0.0000    0:46079         Min.   :1997-02-05   Min.   :1997-02-05   Min.   :0.00000   Min.   :0.00000   Min.   :0.00000  
+ # 1st Qu.:2013-03-05   1st Qu.:0.0000    1:  117         1st Qu.:2012-10-02   1st Qu.:2012-10-22   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.00000  
+ # Median :2013-09-24   Median :0.0000    2:   88         Median :2013-04-17   Median :2013-05-17   Median :0.00000   Median :0.00000   Median :0.00000  
+ # Mean   :2013-09-09   Mean   :0.1175    3:    2         Mean   :2012-08-17   Mean   :2012-09-27   Mean   :0.03382   Mean   :0.02788   Mean   :0.03382  
+ # 3rd Qu.:2014-03-14   3rd Qu.:0.0000    6: 1187         3rd Qu.:2014-01-21   3rd Qu.:2014-01-28   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.00000  
+ # Max.   :2014-09-29   Max.   :7.0000    7: 2354         Max.   :2014-09-18   Max.   :2014-09-18   Max.   :4.00000   Max.   :3.00000   Max.   :4.00000  
+                                                        # NA's   :46079        NA's   :46079                                                             
+ # PEOR_TIPO_FALTA_HIST PRI_FECHA_INF_HIST   ULT_FECHA_INF_HIST   CONS_CANT_TOTAL  CONS_CANT_DIST_ENT CONS_CANT_MAX_ENT FECHA_PRI_CONS       FECHA_PRI_CONS_BANCO
+ # 0:48414              Min.   :1997-01-17   Min.   :1997-01-23   Min.   :  0.00   Min.   : 0.000     Min.   : 0.000    Min.   :2011-01-03   Min.   :2011-01-03  
+ # 1:  444              1st Qu.:2001-02-15   1st Qu.:2001-11-07   1st Qu.:  6.00   1st Qu.: 4.000     1st Qu.: 2.000    1st Qu.:2011-01-26   1st Qu.:2011-01-28  
+ # 2:  301              Median :2004-12-20   Median :2005-04-27   Median : 16.00   Median : 7.000     Median : 5.000    Median :2011-04-04   Median :2011-04-13  
+ # 3:    3              Mean   :2006-01-30   Mean   :2006-04-16   Mean   : 28.23   Mean   : 8.283     Mean   : 7.314    Mean   :2011-08-13   Mean   :2011-08-23  
+ # 6:   88              3rd Qu.:2011-08-01   3rd Qu.:2011-08-05   3rd Qu.: 38.00   3rd Qu.:12.000     3rd Qu.:11.000    3rd Qu.:2011-11-18   3rd Qu.:2011-12-14  
+ # 7:  577              Max.   :2014-08-28   Max.   :2014-08-28   Max.   :235.00   Max.   :45.000     Max.   :37.000    Max.   :2014-09-17   Max.   :2014-09-17  
+                      # NA's   :48414        NA's   :48414                                                              NA's   :1444         NA's   :1792        
+ # FECHA_PRI_CONS_FINAN FECHA_PRI_CONS_PROC_TAR FECHA_PRI_CONS_COOP  FECHA_PRI_CONS_COMERCIO FECHA_ULT_CONS       FECHA_ULT_CONS_BANCO FECHA_ULT_CONS_FINAN
+ # Min.   :2011-01-03   Min.   :2011-01-05      Min.   :2011-01-12   Min.   :2011-10-22      Min.   :2011-01-03   Min.   :2011-01-03   Min.   :2011-01-03  
+ # 1st Qu.:2011-04-13   1st Qu.:2011-10-25      1st Qu.:2011-05-19   1st Qu.:2012-08-16      1st Qu.:2012-11-29   1st Qu.:2012-11-20   1st Qu.:2012-09-05  
+ # Median :2011-11-15   Median :2012-07-16      Median :2013-12-02   Median :2012-11-16      Median :2013-07-10   Median :2013-06-27   Median :2013-03-14  
+ # Mean   :2012-02-04   Mean   :2012-07-04      Mean   :2013-01-21   Mean   :2013-01-06      Mean   :2013-06-21   Mean   :2013-06-08   Mean   :2013-03-21  
+ # 3rd Qu.:2012-09-10   3rd Qu.:2013-01-31      3rd Qu.:2014-01-28   3rd Qu.:2013-05-02      3rd Qu.:2014-01-20   3rd Qu.:2014-01-10   3rd Qu.:2013-12-02  
+ # Max.   :2014-09-01   Max.   :2014-09-05      Max.   :2014-08-12   Max.   :2014-09-03      Max.   :2014-09-26   Max.   :2014-09-26   Max.   :2014-09-22  
+ # NA's   :19020        NA's   :43789           NA's   :49258        NA's   :26119           NA's   :1444         NA's   :1792         NA's   :19020       
+ # FECHA_ULT_CONS_PROC_TAR FECHA_ULT_CONS_COOP  FECHA_ULT_CONS_COMERCIO CONS_CANT_BANCO  CONS_CANT_FINAN  CONS_CANT_PROC_TAR CONS_CANT_COOP    CONS_CANT_COMERCIO
+ # Min.   :2011-01-05      Min.   :2011-01-31   Min.   :2011-10-24      Min.   :  0.00   Min.   : 0.000   Min.   : 0.0000    Min.   :0.00000   Min.   : 0.000    
+ # 1st Qu.:2012-02-21      1st Qu.:2011-05-23   1st Qu.:2012-12-18      1st Qu.:  5.00   1st Qu.: 0.000   1st Qu.: 0.0000    1st Qu.:0.00000   1st Qu.: 0.000    
+ # Median :2012-09-13      Median :2013-12-28   Median :2013-06-25      Median : 13.00   Median : 1.000   Median : 0.0000    Median :0.00000   Median : 0.000    
+ # Mean   :2012-09-16      Mean   :2013-02-18   Mean   :2013-06-25      Mean   : 21.89   Mean   : 4.499   Mean   : 0.1643    Mean   :0.01762   Mean   : 1.657    
+ # 3rd Qu.:2013-04-26      3rd Qu.:2014-03-13   3rd Qu.:2013-12-18      3rd Qu.: 31.00   3rd Qu.: 5.000   3rd Qu.: 0.0000    3rd Qu.:0.00000   3rd Qu.: 2.000    
+ # Max.   :2014-09-05      Max.   :2014-08-12   Max.   :2014-09-25      Max.   :171.00   Max.   :69.000   Max.   :21.0000    Max.   :3.00000   Max.   :32.000    
+ # NA's   :43789           NA's   :49258        NA's   :26119                                                                                                    
+     # FECHA            CH_RE_PRIM_FECH      CH_RE_ULT_FECH       CH_RE_CANT_TOTAL  CH_RE_CANT_GIRO   CH_RE_CANT_I_FOND CH_RE_CANT_DEF_F CH_RE_CANT_NO_IMPUT
+ # Min.   :2012-08-03   Min.   :2011-08-16   Min.   :2011-08-31   Min.   :  0.000   Min.   :  0.000   Min.   : 0.000    Min.   : 0.000   Min.   :  0.000    
+ # 1st Qu.:2013-03-05   1st Qu.:2012-08-08   1st Qu.:2013-01-04   1st Qu.:  1.000   1st Qu.:  0.000   1st Qu.: 0.000    1st Qu.: 0.000   1st Qu.:  0.000    
+ # Median :2013-09-24   Median :2013-02-11   Median :2013-07-18   Median :  2.000   Median :  0.000   Median : 0.000    Median : 0.000   Median :  1.000    
+ # Mean   :2013-09-09   Mean   :2013-02-06   Mean   :2013-07-11   Mean   :  7.958   Mean   :  0.394   Mean   : 1.049    Mean   : 1.075   Mean   :  5.441    
+ # 3rd Qu.:2014-03-14   3rd Qu.:2013-08-05   3rd Qu.:2014-01-23   3rd Qu.:  7.000   3rd Qu.:  0.000   3rd Qu.: 1.000    3rd Qu.: 1.000   3rd Qu.:  4.000    
+ # Max.   :2014-09-29   Max.   :2014-09-22   Max.   :2014-09-26   Max.   :529.000   Max.   :254.000   Max.   :79.000    Max.   :37.000   Max.   :319.000    
+                      # NA's   :12314        NA's   :12314                                                                                                  
+ # CH_RE_CANT_U1M    CH_RE_CANT_U3M    CH_RE_CANT_U6M    CH_RE_GIRO_U1M     CH_RE_I_FOND_U1M  CH_RE_DEF_F_U1M   CH_RE_GIRO_U3M     CH_RE_I_FOND_U3M  CH_RE_DEF_F_U3M  
+ # Min.   :  0.000   Min.   :  0.000   Min.   :  0.000   Min.   :  0.0000   Min.   : 0.0000   Min.   : 0.0000   Min.   :  0.0000   Min.   : 0.0000   Min.   : 0.0000  
+ # 1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.0000   1st Qu.: 0.0000   1st Qu.: 0.0000   1st Qu.:  0.0000   1st Qu.: 0.0000   1st Qu.: 0.0000  
+ # Median :  0.000   Median :  1.000   Median :  1.000   Median :  0.0000   Median : 0.0000   Median : 0.0000   Median :  0.0000   Median : 0.0000   Median : 0.0000  
+ # Mean   :  2.167   Mean   :  4.198   Mean   :  5.862   Mean   :  0.1724   Mean   : 0.3635   Mean   : 0.1222   Mean   :  0.2828   Mean   : 0.6696   Mean   : 0.3359  
+ # 3rd Qu.:  1.000   3rd Qu.:  3.000   3rd Qu.:  4.000   3rd Qu.:  0.0000   3rd Qu.: 0.0000   3rd Qu.: 0.0000   3rd Qu.:  0.0000   3rd Qu.: 0.0000   3rd Qu.: 0.0000  
+ # Max.   :187.000   Max.   :436.000   Max.   :522.000   Max.   :139.0000   Max.   :78.0000   Max.   :20.0000   Max.   :254.0000   Max.   :78.0000   Max.   :22.0000  
+                                                                                                                                                                    
+ # CH_RE_GIRO_U6M     CH_RE_I_FOND_U6M CH_RE_DEF_F_U6M   CH_RE_CANT_GS    CH_RE_GIRO_GS      CH_RE_I_FOND_GS  CH_RE_DEF_F_GS   CH_RE_CANT_OT_MON  CH_RE_DEF_F_OT_MON
+ # Min.   :  0.0000   Min.   : 0.000   Min.   : 0.0000   Min.   :  0.00   Min.   :  0.0000   Min.   : 0.000   Min.   : 0.000   Min.   :  0.0000   Min.   : 0.00000  
+ # 1st Qu.:  0.0000   1st Qu.: 0.000   1st Qu.: 0.0000   1st Qu.:  0.00   1st Qu.:  0.0000   1st Qu.: 0.000   1st Qu.: 0.000   1st Qu.:  0.0000   1st Qu.: 0.00000  
+ # Median :  0.0000   Median : 0.000   Median : 0.0000   Median :  2.00   Median :  0.0000   Median : 0.000   Median : 0.000   Median :  0.0000   Median : 0.00000  
+ # Mean   :  0.3461   Mean   : 0.858   Mean   : 0.6174   Mean   :  7.68   Mean   :  0.3805   Mean   : 1.009   Mean   : 1.041   Mean   :  0.2785   Mean   : 0.03384  
+ # 3rd Qu.:  0.0000   3rd Qu.: 1.000   3rd Qu.: 1.0000   3rd Qu.:  7.00   3rd Qu.:  0.0000   3rd Qu.: 1.000   3rd Qu.: 1.000   3rd Qu.:  0.0000   3rd Qu.: 0.00000  
+ # Max.   :254.0000   Max.   :78.000   Max.   :25.0000   Max.   :428.00   Max.   :204.0000   Max.   :79.000   Max.   :37.000   Max.   :144.0000   Max.   :10.00000  
+                                                                                                                                                                  
+ # CH_RE_GIRO_OT_MON  CH_RE_I_FOND_OT_MON CH_RE_MONTO_GS      CH_RE_MONTO_GIRO_GS CH_RE_MONTO_I_FOND_GS CH_RE_MONTO_DEF_F_GS CH_RE_MONTO_OT_MON
+ # Min.   : 0.00000   Min.   : 0.00000    Min.   :0.000e+00   Min.   :0.000e+00   Min.   :0.000e+00     Min.   :0.000e+00    Min.   :       0  
+ # 1st Qu.: 0.00000   1st Qu.: 0.00000    1st Qu.:0.000e+00   1st Qu.:0.000e+00   1st Qu.:0.000e+00     1st Qu.:0.000e+00    1st Qu.:       0  
+ # Median : 0.00000   Median : 0.00000    Median :1.200e+07   Median :0.000e+00   Median :0.000e+00     Median :0.000e+00    Median :       0  
+ # Mean   : 0.01351   Mean   : 0.03978    Mean   :1.161e+08   Mean   :5.919e+06   Mean   :1.719e+07     Mean   :1.368e+07    Mean   :    5362  
+ # 3rd Qu.: 0.00000   3rd Qu.: 0.00000    3rd Qu.:5.375e+07   3rd Qu.:0.000e+00   3rd Qu.:9.330e+06     3rd Qu.:6.744e+06    3rd Qu.:       0  
+ # Max.   :50.00000   Max.   :24.00000    Max.   :2.485e+10   Max.   :1.004e+10   Max.   :8.223e+09     Max.   :9.424e+09    Max.   :11296294  
+                                                                                                                                             
+ # CH_RE_MONTO_GIRO_OT_MON CH_RE_MONTO_I_FOND_OT_MON CH_RE_MONTO_DEF_F_OT_MON CH_RE_MAX_MONTO_GS  CH_RE_MAX_MONTO_GIRO_GS CH_RE_MAX_MONTO_I_FOND_GS
+ # Min.   :       0        Min.   :     0            Min.   :     0.0         Min.   :0.000e+00   Min.   :0.000e+00       Min.   :0.000e+00        
+ # 1st Qu.:       0        1st Qu.:     0            1st Qu.:     0.0         1st Qu.:0.000e+00   1st Qu.:0.000e+00       1st Qu.:0.000e+00        
+ # Median :       0        Median :     0            Median :     0.0         Median :6.000e+06   Median :0.000e+00       Median :0.000e+00        
+ # Mean   :     717        Mean   :  1576            Mean   :   508.7         Mean   :3.677e+07   Mean   :1.346e+06       Mean   :8.717e+06        
+ # 3rd Qu.:       0        3rd Qu.:     0            3rd Qu.:     0.0         3rd Qu.:1.979e+07   3rd Qu.:0.000e+00       3rd Qu.:6.500e+06        
+ # Max.   :11219692        Max.   :690000            Max.   :700000.0         Max.   :2.050e+10   Max.   :1.000e+10       Max.   :4.300e+09        
+                                                                                                                                                 
+ # CH_RE_MAX_MONTO_DEF_F_GS CH_RE_MAX_MONTO_OT_MON CH_RE_MAX_MONTO_GIRO_OT_MON CH_RE_MAX_MONTO_I_FOND_OT_MON CH_RE_MAX_MONTO_DEF_F_OT_MON CH_RE_MIN_MONTO_GS 
+ # Min.   :0.000e+00        Min.   :       0       Min.   :       0            Min.   :     0                Min.   :     0.0             Min.   :0.000e+00  
+ # 1st Qu.:0.000e+00        1st Qu.:       0       1st Qu.:       0            1st Qu.:     0                1st Qu.:     0.0             1st Qu.:0.000e+00  
+ # Median :0.000e+00        Median :       0       Median :       0            Median :     0                Median :     0.0             Median :9.139e+05  
+ # Mean   :9.521e+06        Mean   :    2205       Mean   :     355            Mean   :  1191                Mean   :   421.9             Mean   :4.001e+06  
+ # 3rd Qu.:5.000e+06        3rd Qu.:       0       3rd Qu.:       0            3rd Qu.:     0                3rd Qu.:     0.0             3rd Qu.:2.560e+06  
+ # Max.   :3.618e+09        Max.   :11203642       Max.   :11203642            Max.   :650000                Max.   :700000.0             Max.   :4.300e+09  
+                                                                                                                                                           
+ # CH_RE_MIN_MONTO_GIRO_GS CH_RE_MIN_MONTO_I_FOND_GS CH_RE_MIN_MONTO_DEF_F_GS CH_RE_MIN_MONTO_OT_MON CH_RE_MIN_MONTO_GIRO_OT_MON CH_RE_MIN_MONTO_I_FOND_OT_MON
+ # Min.   :        0       Min.   :0.000e+00         Min.   :0.000e+00        Min.   :     0.0       Min.   :    0.00            Min.   :     0.0             
+ # 1st Qu.:        0       1st Qu.:0.000e+00         1st Qu.:0.000e+00        1st Qu.:     0.0       1st Qu.:    0.00            1st Qu.:     0.0             
+ # Median :        0       Median :0.000e+00         Median :0.000e+00        Median :     0.0       Median :    0.00            Median :     0.0             
+ # Mean   :   178918       Mean   :4.776e+06         Mean   :3.352e+06        Mean   :   389.4       Mean   :   18.56            Mean   :   693.7             
+ # 3rd Qu.:        0       3rd Qu.:3.000e+06         3rd Qu.:2.000e+06        3rd Qu.:     0.0       3rd Qu.:    0.00            3rd Qu.:     0.0             
+ # Max.   :135620000       Max.   :4.300e+09         Max.   :2.713e+09        Max.   :700000.0       Max.   :50000.00            Max.   :530000.0             
+                                                                                                                                                            
+ # CH_RE_MIN_MONTO_DEF_F_OT_MON CH_RE_AVG_MONTO_GS  CH_RE_AVG_MONTO_GIRO_GS CH_RE_AVG_MONTO_I_FOND_GS CH_RE_AVG_MONTO_DEF_F_GS CH_RE_AVG_MONTO_OT_MON
+ # Min.   :     0               Min.   :0.000e+00   Min.   :0.000e+00       Min.   :0.0e+00           Min.   :0.000e+00        Min.   :      0.0     
+ # 1st Qu.:     0               1st Qu.:0.000e+00   1st Qu.:0.000e+00       1st Qu.:0.0e+00           1st Qu.:0.000e+00        1st Qu.:      0.0     
+ # Median :     0               Median :3.772e+06   Median :0.000e+00       Median :0.0e+00           Median :0.000e+00        Median :      0.0     
+ # Mean   :   233               Mean   :1.015e+07   Mean   :5.083e+05       Mean   :6.5e+06           Mean   :5.449e+06        Mean   :    805.8     
+ # 3rd Qu.:     0               3rd Qu.:9.142e+06   3rd Qu.:0.000e+00       3rd Qu.:5.3e+06           3rd Qu.:3.749e+06        3rd Qu.:      0.0     
+ # Max.   :700000               Max.   :4.490e+09   Max.   :5.022e+09       Max.   :4.3e+09           Max.   :3.141e+09        Max.   :1026935.8     
+                                                                                                                                                   
+ # CH_RE_AVG_MONTO_GIRO_OT_MON CH_RE_AVG_MONTO_I_FOND_OT_MON CH_RE_AVG_MONTO_DEF_F_OT_MON CH_RE_MONTO_TOT_ARB CH_RE_MONTO_GIRO_ARB CH_RE_MONTO_I_FOND_ARB
+ # Min.   :      0             Min.   :     0                Min.   :     0.0             Min.   :0.000e+00   Min.   :0.000e+00    Min.   :0.000e+00     
+ # 1st Qu.:      0             1st Qu.:     0                1st Qu.:     0.0             1st Qu.:2.151e+05   1st Qu.:0.000e+00    1st Qu.:0.000e+00     
+ # Median :      0             Median :     0                Median :     0.0             Median :1.320e+07   Median :0.000e+00    Median :0.000e+00     
+ # Mean   :    116             Mean   :   933                Mean   :   323.5             Mean   :1.401e+08   Mean   :9.168e+06    Mean   :2.424e+07     
+ # 3rd Qu.:      0             3rd Qu.:     0                3rd Qu.:     0.0             3rd Qu.:5.900e+07   3rd Qu.:0.000e+00    3rd Qu.:1.000e+07     
+ # Max.   :3739897             Max.   :530000                Max.   :700000.0             Max.   :5.243e+10   Max.   :5.050e+10    Max.   :9.502e+09     
+                                                                                                                                                       
+ # CH_RE_MONTO_DEF_F_ARB CH_RE_MAX_MONTO_ARB CH_RE_MAX_MONTO_GIRO_ARB CH_RE_MAX_MONTO_I_FOND_ARB CH_RE_MAX_MONTO_DEF_F_ARB CH_RE_MIN_MONTO_ARB
+ # Min.   :0.000e+00     Min.   :0.000e+00   Min.   :0.000e+00        Min.   :0.000e+00          Min.   :0.000e+00         Min.   :0.000e+00  
+ # 1st Qu.:0.000e+00     1st Qu.:2.000e+05   1st Qu.:0.000e+00        1st Qu.:0.000e+00          1st Qu.:0.000e+00         1st Qu.:6.783e+03  
+ # Median :0.000e+00     Median :6.500e+06   Median :0.000e+00        Median :0.000e+00          Median :0.000e+00         Median :9.500e+05  
+ # Mean   :1.593e+07     Mean   :4.425e+07   Mean   :2.792e+06        Mean   :1.352e+07          Mean   :1.077e+07         Mean   :4.279e+06  
+ # 3rd Qu.:7.228e+06     3rd Qu.:2.000e+07   3rd Qu.:0.000e+00        3rd Qu.:7.000e+06          3rd Qu.:5.000e+06         3rd Qu.:2.650e+06  
+ # Max.   :9.424e+09     Max.   :4.956e+10   Max.   :4.956e+10        Max.   :4.300e+09          Max.   :3.618e+09         Max.   :3.130e+09  
+                                                                                                                                            
+ # CH_RE_MIN_MONTO_GIRO_ARB CH_RE_MIN_MONTO_I_FOND_ARB CH_RE_MIN_MONTO_DEF_F_ARB CH_RE_AVG_MONTO_TOT_ARB CH_RE_AVG_MONTO_GIRO_ARB CH_RE_AVG_MONTO_I_FOND_ARB
+ # Min.   :        0        Min.   :0.000e+00          Min.   :0.000e+00         Min.   :0.000e+00       Min.   :0.000e+00        Min.   :0.000e+00         
+ # 1st Qu.:        0        1st Qu.:0.000e+00          1st Qu.:0.000e+00         1st Qu.:1.911e+05       1st Qu.:0.000e+00        1st Qu.:0.000e+00         
+ # Median :        0        Median :0.000e+00          Median :0.000e+00         Median :3.961e+06       Median :0.000e+00        Median :0.000e+00         
+ # Mean   :   190291        Mean   :6.522e+06          Mean   :3.766e+06         Mean   :1.125e+07       Mean   :5.947e+05        Mean   :8.580e+06         
+ # 3rd Qu.:        0        3rd Qu.:3.100e+06          3rd Qu.:2.109e+06         3rd Qu.:9.709e+06       3rd Qu.:0.000e+00        3rd Qu.:5.579e+06         
+ # Max.   :183400000        Max.   :2.349e+09          Max.   :3.130e+09         Max.   :4.490e+09       Max.   :5.022e+09        Max.   :2.349e+09         
+                                                                                                                                                          
+ # CH_RE_AVG_MONTO_DEF_F_ARB CH_RE_DIST_BANCO CH_RE_GIRO_DIST_BANCO CH_RE_I_FON_DIST_BANCO CH_RE_DEF_F_DIST_BANCO CH_RE_MAX_BANCO   CH_RE_MAX_GIRO_BANCO
+ # Min.   :0.000e+00         Min.   : 0.000   Min.   :0.00000       Min.   :0.0000         Min.   :0.0000         Min.   :  0.000   Min.   :  0.0000    
+ # 1st Qu.:0.000e+00         1st Qu.: 1.000   1st Qu.:0.00000       1st Qu.:0.0000         1st Qu.:0.0000         1st Qu.:  1.000   1st Qu.:  0.0000    
+ # Median :0.000e+00         Median : 1.000   Median :0.00000       Median :0.0000         Median :0.0000         Median :  2.000   Median :  0.0000    
+ # Mean   :6.213e+06         Mean   : 1.711   Mean   :0.04391       Mean   :0.4733         Mean   :0.5287         Mean   :  6.897   Mean   :  0.3439    
+ # 3rd Qu.:3.900e+06         3rd Qu.: 2.000   3rd Qu.:0.00000       3rd Qu.:1.0000         3rd Qu.:1.0000         3rd Qu.:  6.000   3rd Qu.:  0.0000    
+ # Max.   :3.141e+09         Max.   :15.000   Max.   :5.00000       Max.   :6.0000         Max.   :5.0000         Max.   :401.000   Max.   :202.0000    
+                                                                                                                                                      
+ # CH_RE_MAX_INSUF_FONDOS_BANCO CH_RE_MAX_DEF_FORMA_BANCO CH_RE_H_PRIM_FECH    CH_RE_H_ULT_FECH     CH_RE_H_CANT_TOTAL CH_RE_H_CANT_GIRO  CH_RE_H_CANT_I_FON
+ # Min.   : 0.0000              Min.   : 0.0000           Min.   :1996-12-31   Min.   :1997-01-06   Min.   :  0.00     Min.   :  0.0000   Min.   :  0.000   
+ # 1st Qu.: 0.0000              1st Qu.: 0.0000           1st Qu.:2006-02-28   1st Qu.:2011-07-22   1st Qu.:  0.00     1st Qu.:  0.0000   1st Qu.:  0.000   
+ # Median : 0.0000              Median : 0.0000           Median :2009-12-09   Median :2012-03-14   Median :  2.00     Median :  0.0000   Median :  0.000   
+ # Mean   : 0.8815              Mean   : 0.9618           Mean   :2008-09-18   Mean   :2011-10-14   Mean   :  9.05     Mean   :  0.4865   Mean   :  1.974   
+ # 3rd Qu.: 1.0000              3rd Qu.: 1.0000           3rd Qu.:2011-06-28   3rd Qu.:2012-11-02   3rd Qu.:  9.00     3rd Qu.:  0.0000   3rd Qu.:  1.000   
+ # Max.   :77.0000              Max.   :36.0000           Max.   :2013-09-20   Max.   :2013-09-23   Max.   :541.00     Max.   :118.0000   Max.   :237.000   
+                                                        # NA's   :18176        NA's   :18176                                                                
+ # CH_RE_H_CANT_DEF_F CH_RE_H_CANT_NO_IMPUT CH_RE_H_CANT_U24M CH_RE_H_CANT_U36M CH_RE_H_CANT_U60M CH_RE_H_GIRO_U24M  CH_RE_H_I_FON_U24M CH_RE_H_DEF_F_U24M
+ # Min.   : 0.000     Min.   :  0.000       Min.   :  0.00    Min.   :  0.000   Min.   :  0.000   Min.   : 0.00000   Min.   : 0.0000    Min.   : 0.000    
+ # 1st Qu.: 0.000     1st Qu.:  0.000       1st Qu.:  0.00    1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.: 0.00000   1st Qu.: 0.0000    1st Qu.: 0.000    
+ # Median : 0.000     Median :  0.000       Median :  0.00    Median :  1.000   Median :  1.000   Median : 0.00000   Median : 0.0000    Median : 0.000    
+ # Mean   : 2.301     Mean   :  4.288       Mean   :  2.82    Mean   :  4.541   Mean   :  6.518   Mean   : 0.04401   Mean   : 0.2508    Mean   : 0.716    
+ # 3rd Qu.: 3.000     3rd Qu.:  3.000       3rd Qu.:  3.00    3rd Qu.:  4.000   3rd Qu.:  6.000   3rd Qu.: 0.00000   3rd Qu.: 0.0000    3rd Qu.: 1.000    
+ # Max.   :58.000     Max.   :482.000       Max.   :175.00    Max.   :302.000   Max.   :417.000   Max.   :70.00000   Max.   :21.0000    Max.   :37.000    
+                                                                                                                                                        
+ # CH_RE_H_GIRO_U36M CH_RE_H_I_FON_U36M CH_RE_H_DEF_F_U36M CH_RE_H_GIRO_U60M  CH_RE_H_I_FON_U60M CH_RE_H_DEF_F_U60M CH_RE_H_CANT_GS   CH_RE_H_GIRO_GS  
+ # Min.   : 0.0000   Min.   : 0.0000    Min.   : 0.000     Min.   :  0.0000   Min.   :  0.000    Min.   : 0.000     Min.   :  0.000   Min.   :  0.000  
+ # 1st Qu.: 0.0000   1st Qu.: 0.0000    1st Qu.: 0.000     1st Qu.:  0.0000   1st Qu.:  0.000    1st Qu.: 0.000     1st Qu.:  0.000   1st Qu.:  0.000  
+ # Median : 0.0000   Median : 0.0000    Median : 0.000     Median :  0.0000   Median :  0.000    Median : 0.000     Median :  2.000   Median :  0.000  
+ # Mean   : 0.0932   Mean   : 0.4197    Mean   : 1.208     Mean   :  0.1792   Mean   :  0.972    Mean   : 1.699     Mean   :  8.888   Mean   :  0.483  
+ # 3rd Qu.: 0.0000   3rd Qu.: 0.0000    3rd Qu.: 2.000     3rd Qu.:  0.0000   3rd Qu.:  1.000    3rd Qu.: 2.000     3rd Qu.:  9.000   3rd Qu.:  0.000  
+ # Max.   :91.0000   Max.   :57.0000    Max.   :38.000     Max.   :101.0000   Max.   :197.000    Max.   :43.000     Max.   :541.000   Max.   :118.000  
+                                                                                                                                                     
+ # CH_RE_H_I_FON_GS  CH_RE_H_DEF_F_GS CH_RE_H_MONTO_GS    CH_RE_H_MONTO_GIRO_GS CH_RE_H_MONTO_I_FON_GS CH_RE_H_MONTO_DEF_F_GS CH_RE_H_MONTO_OT_MON
+ # Min.   :  0.000   Min.   : 0.00    Min.   :0.000e+00   Min.   :0.000e+00     Min.   :0.000e+00      Min.   :0.000e+00      Min.   :      0     
+ # 1st Qu.:  0.000   1st Qu.: 0.00    1st Qu.:0.000e+00   1st Qu.:0.000e+00     1st Qu.:0.000e+00      1st Qu.:0.000e+00      1st Qu.:      0     
+ # Median :  0.000   Median : 0.00    Median :6.449e+06   Median :0.000e+00     Median :0.000e+00      Median :0.000e+00      Median :      0     
+ # Mean   :  1.936   Mean   : 2.26    Mean   :1.021e+08   Mean   :2.871e+06     Mean   :2.486e+07      Mean   :2.907e+07      Mean   :   2678     
+ # 3rd Qu.:  1.000   3rd Qu.: 3.00    3rd Qu.:5.084e+07   3rd Qu.:0.000e+00     3rd Qu.:6.350e+06      3rd Qu.:1.116e+07      3rd Qu.:      0     
+ # Max.   :237.000   Max.   :56.00    Max.   :1.000e+11   Max.   :3.011e+09     Max.   :1.279e+10      Max.   :1.000e+11      Max.   :5112828     
+                                                                                                                                                
+ # CH_RE_H_MONTO_GIRO_OT_MON CH_RE_H_MONTO_I_FON_OT_MON CH_RE_H_MONTO_DEF_F_OT_MON CH_RE_H_MAX_MONTO_GS CH_RE_H_MAX_MONTO_GIRO_GS CH_RE_H_MAX_MONTO_I_FON_GS
+ # Min.   :      0           Min.   :      0            Min.   :     0.0           Min.   :0.000e+00    Min.   :0.000e+00         Min.   :0.000e+00         
+ # 1st Qu.:      0           1st Qu.:      0            1st Qu.:     0.0           1st Qu.:0.000e+00    1st Qu.:0.000e+00         1st Qu.:0.000e+00         
+ # Median :      0           Median :      0            Median :     0.0           Median :3.477e+06    Median :0.000e+00         Median :0.000e+00         
+ # Mean   :    384           Mean   :    967            Mean   :   690.2           Mean   :3.372e+07    Mean   :7.323e+05         Mean   :9.127e+06         
+ # 3rd Qu.:      0           3rd Qu.:      0            3rd Qu.:     0.0           3rd Qu.:1.591e+07    3rd Qu.:0.000e+00         3rd Qu.:4.500e+06         
+ # Max.   :3480891           Max.   :3835166            Max.   :888000.0           Max.   :1.000e+11    Max.   :3.000e+09         Max.   :1.279e+10         
+                                                                                                                                                          
+ # CH_RE_H_MAX_MONTO_DEF_F_GS CH_RE_H_MAX_MONTO_OT_MON CH_RE_H_MAX_MONTO_GIRO_OT_MON CH_RE_H_MAX_MONTO_I_FON_OT_MON CH_RE_H_MAX_MONTO_DEF_F_OT_MON
+ # Min.   :0.000e+00          Min.   :     0           Min.   :     0.0              Min.   :     0                 Min.   :     0.0              
+ # 1st Qu.:0.000e+00          1st Qu.:     0           1st Qu.:     0.0              1st Qu.:     0                 1st Qu.:     0.0              
+ # Median :0.000e+00          Median :     0           Median :     0.0              Median :     0                 Median :     0.0              
+ # Mean   :1.791e+07          Mean   :  1198           Mean   :    84.7              Mean   :   421                 Mean   :   597.9              
+ # 3rd Qu.:5.500e+06          3rd Qu.:     0           3rd Qu.:     0.0              3rd Qu.:     0                 3rd Qu.:     0.0              
+ # Max.   :1.000e+11          Max.   :750000           Max.   :483510.0              Max.   :750000                 Max.   :660400.4              
+                                                                                                                                                
+ # CH_RE_H_MIN_MONTO_GS CH_RE_H_MIN_MONTO_GIRO_GS CH_RE_H_MIN_MONTO_I_FON_GS CH_RE_H_MIN_MONTO_DEF_F_GS CH_RE_H_MIN_MONTO_OT_MON CH_RE_H_MIN_MONTO_GIRO_OT_MON
+ # Min.   :0.000e+00    Min.   :        0         Min.   :0.000e+00          Min.   :0.000e+00          Min.   :     0.0         Min.   :    0.00             
+ # 1st Qu.:0.000e+00    1st Qu.:        0         1st Qu.:0.000e+00          1st Qu.:0.000e+00          1st Qu.:     0.0         1st Qu.:    0.00             
+ # Median :2.655e+05    Median :        0         Median :0.000e+00          Median :0.000e+00          Median :     0.0         Median :    0.00             
+ # Mean   :2.249e+06    Mean   :   151884         Mean   :3.808e+06          Mean   :2.340e+06          Mean   :   296.5         Mean   :   10.46             
+ # 3rd Qu.:1.134e+06    3rd Qu.:        0         3rd Qu.:1.000e+06          3rd Qu.:1.215e+06          3rd Qu.:     0.0         3rd Qu.:    0.00             
+ # Max.   :1.279e+10    Max.   :200000000         Max.   :1.279e+10          Max.   :2.000e+09          Max.   :660400.4         Max.   :23000.00             
+                                                                                                                                                            
+ # CH_RE_H_MIN_MONTO_I_FON_OT_MON CH_RE_H_MIN_MONTO_DEF_F_OT_MON CH_RE_H_AVG_MONTO_GS CH_RE_H_AVG_MONTO_GIRO_GS CH_RE_H_AVG_MONTO_I_FON_GS CH_RE_H_AVG_MONTO_DEF_F_GS
+ # Min.   :     0.0               Min.   :     0.0               Min.   :0.000e+00    Min.   :        0         Min.   :0.000e+00          Min.   :0.00e+00          
+ # 1st Qu.:     0.0               1st Qu.:     0.0               1st Qu.:0.000e+00    1st Qu.:        0         1st Qu.:0.000e+00          1st Qu.:0.00e+00          
+ # Median :     0.0               Median :     0.0               Median :1.990e+06    Median :        0         Median :0.000e+00          Median :0.00e+00          
+ # Mean   :   169.8               Mean   :   278.3               Mean   :7.354e+06    Mean   :   323757         Mean   :5.626e+06          Mean   :6.28e+06          
+ # 3rd Qu.:     0.0               3rd Qu.:     0.0               3rd Qu.:6.000e+06    3rd Qu.:        0         3rd Qu.:3.137e+06          3rd Qu.:3.45e+06          
+ # Max.   :154278.5               Max.   :660400.4               Max.   :1.279e+10    Max.   :577700000         Max.   :1.279e+10          Max.   :2.00e+10          
+                                                                                                                                                                   
+ # CH_RE_H_AVG_MONTO_OT_MON CH_RE_H_AVG_MONTO_GIRO_OT_MON CH_RE_H_AVG_MONTO_I_FON_OT_MON CH_RE_H_AVG_MONTO_DEF_F_OT_MON CH_RE_H_MONTO_TOT_ARB CH_RE_H_MONTO_GIRO_ARB
+ # Min.   :     0.0         Min.   :     0.0              Min.   :     0.0               Min.   :     0.0               Min.   :0.000e+00     Min.   :0.000e+00     
+ # 1st Qu.:     0.0         1st Qu.:     0.0              1st Qu.:     0.0               1st Qu.:     0.0               1st Qu.:0.000e+00     1st Qu.:0.000e+00     
+ # Median :     0.0         Median :     0.0              Median :     0.0               Median :     0.0               Median :6.910e+06     Median :0.000e+00     
+ # Mean   :   576.3         Mean   :    46.3              Mean   :   258.1               Mean   :   411.8               Mean   :1.138e+08     Mean   :4.566e+06     
+ # 3rd Qu.:     0.0         3rd Qu.:     0.0              3rd Qu.:     0.0               3rd Qu.:     0.0               3rd Qu.:5.455e+07     3rd Qu.:0.000e+00     
+ # Max.   :660400.4         Max.   :274226.5              Max.   :272438.8               Max.   :660400.4               Max.   :1.000e+11     Max.   :1.607e+10     
+                                                                                                                                                                  
+ # CH_RE_H_MONTO_I_FON_ARB CH_RE_H_MONTO_DEF_F_ARB CH_RE_H_MAX_MONTO_ARB CH_RE_H_MAX_MONTO_GIRO_ARB CH_RE_H_MAX_MONTO_I_FON_ARB CH_RE_H_MAX_MONTO_DEF_F_ARB
+ # Min.   :0.000e+00       Min.   :0.000e+00       Min.   :0.000e+00     Min.   :0.00e+00           Min.   :0.000e+00           Min.   :0.000e+00          
+ # 1st Qu.:0.000e+00       1st Qu.:0.000e+00       1st Qu.:0.000e+00     1st Qu.:0.00e+00           1st Qu.:0.000e+00           1st Qu.:0.000e+00          
+ # Median :0.000e+00       Median :0.000e+00       Median :3.580e+06     Median :0.00e+00           Median :0.000e+00           Median :0.000e+00          
+ # Mean   :2.910e+07       Mean   :3.208e+07       Mean   :3.749e+07     Mean   :1.09e+06           Mean   :1.070e+07           Mean   :2.013e+07          
+ # 3rd Qu.:6.920e+06       3rd Qu.:1.167e+07       3rd Qu.:1.673e+07     3rd Qu.:0.00e+00           3rd Qu.:4.900e+06           3rd Qu.:5.800e+06          
+ # Max.   :1.868e+10       Max.   :1.000e+11       Max.   :1.000e+11     Max.   :3.00e+09           Max.   :1.279e+10           Max.   :1.000e+11          
+                                                                                                                                                         
+ # CH_RE_H_MIN_MONTO_ARB CH_RE_H_MIN_MONTO_GIRO_ARB CH_RE_H_MIN_MONTO_I_FON_ARB CH_RE_H_MIN_MONTO_DEF_F_ARB CH_RE_H_AVG_MONTO_TOT_ARB CH_RE_H_AVG_MONTO_GIRO_ARB
+ # Min.   :       0      Min.   :       0           Min.   :       0            Min.   :        0           Min.   :0.000e+00         Min.   :        0         
+ # 1st Qu.:       0      1st Qu.:       0           1st Qu.:       0            1st Qu.:        0           1st Qu.:0.000e+00         1st Qu.:        0         
+ # Median :       0      Median :       0           Median :       0            Median :        0           Median :2.041e+06         Median :        0         
+ # Mean   :   69220      Mean   :    3350           Mean   :   46160            Mean   :    48401           Mean   :8.180e+06         Mean   :   101789         
+ # 3rd Qu.:       0      3rd Qu.:       0           3rd Qu.:       0            3rd Qu.:        0           3rd Qu.:6.230e+06         3rd Qu.:        0         
+ # Max.   :70355528      Max.   :32360900           Max.   :89214400            Max.   :111379427           Max.   :1.279e+10         Max.   :278600000         
+                                                                                                                                                              
+ # CH_RE_H_AVG_MONTO_I_FON_ARB CH_RE_H_AVG_MONTO_DEF_F_ARB CH_RE_H_DIST_BANCO CH_RE_H_GIRO_DIST_BANCO CH_RE_H_I_FOND_DIST_BANCO CH_RE_H_DEF_F_DIST_BANCO
+ # Min.   :0.000e+00           Min.   :0.000e+00           Min.   : 0.000     Min.   :0.00000         Min.   :0.000             Min.   :0.0000          
+ # 1st Qu.:0.000e+00           1st Qu.:0.000e+00           1st Qu.: 0.000     1st Qu.:0.00000         1st Qu.:0.000             1st Qu.:0.0000          
+ # Median :0.000e+00           Median :0.000e+00           Median : 1.000     Median :0.00000         Median :0.000             Median :0.0000          
+ # Mean   :2.757e+06           Mean   :2.994e+06           Mean   : 1.863     Mean   :0.04953         Mean   :0.463             Mean   :0.7252          
+ # 3rd Qu.:8.125e+05           3rd Qu.:1.539e+06           3rd Qu.: 3.000     3rd Qu.:0.00000         3rd Qu.:1.000             3rd Qu.:1.0000          
+ # Max.   :1.279e+10           Max.   :1.000e+10           Max.   :21.000     Max.   :5.00000         Max.   :8.000             Max.   :8.0000          
+                                                                                                                                                      
+ # CH_RE_H_MAX_BANCO CH_RE_H_MAX_GIRO_BANCO CH_RE_H_MAX_I_FOND_BANCO CH_RE_H_MAX_DEF_FORMA_BANCO CH_ANU_DIST_BANCO CH_EXT_DIST_BANCO CH_SUS_DIST_BANCO
+ # Min.   :  0.000   Min.   :  0.0000       Min.   :  0.000          Min.   : 0.000              Min.   :0.0000    Min.   :0.0000    Min.   :0.00000  
+ # 1st Qu.:  0.000   1st Qu.:  0.0000       1st Qu.:  0.000          1st Qu.: 0.000              1st Qu.:0.0000    1st Qu.:0.0000    1st Qu.:0.00000  
+ # Median :  2.000   Median :  0.0000       Median :  0.000          Median : 0.000              Median :0.0000    Median :0.0000    Median :0.00000  
+ # Mean   :  7.364   Mean   :  0.4597       Mean   :  1.653          Mean   : 1.888              Mean   :0.1525    Mean   :0.1175    Mean   :0.03026  
+ # 3rd Qu.:  7.000   3rd Qu.:  0.0000       3rd Qu.:  1.000          3rd Qu.: 2.000              3rd Qu.:0.0000    3rd Qu.:0.0000    3rd Qu.:0.00000  
+ # Max.   :538.000   Max.   :118.0000       Max.   :211.000          Max.   :56.000              Max.   :2.0000    Max.   :3.0000    Max.   :3.00000  
+                                                                                                                                                    
+ # CH_C_EMB_DIST_BANCO CH_ANU_MAX_BANCO  CH_EXT_MAX_BANCO  CH_SUS_MAX_BANCO   CH_C_EMB_MAX_BANCO CH_ANU_CANT_TOTAL CH_EXT_CANT_TOTAL CH_SUS_CANT_TOTAL 
+ # Min.   :0           Min.   :  0.000   Min.   :  0.000   Min.   :  0.0000   Min.   :0          Min.   :  0.000   Min.   :  0.000   Min.   :  0.0000  
+ # 1st Qu.:0           1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.0000   1st Qu.:0          1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.0000  
+ # Median :0           Median :  0.000   Median :  0.000   Median :  0.0000   Median :0          Median :  0.000   Median :  0.000   Median :  0.0000  
+ # Mean   :0           Mean   :  1.435   Mean   :  1.441   Mean   :  0.3653   Mean   :0          Mean   :  1.435   Mean   :  1.441   Mean   :  0.3653  
+ # 3rd Qu.:0           3rd Qu.:  0.000   3rd Qu.:  0.000   3rd Qu.:  0.0000   3rd Qu.:0          3rd Qu.:  0.000   3rd Qu.:  0.000   3rd Qu.:  0.0000  
+ # Max.   :0           Max.   :225.000   Max.   :215.000   Max.   :225.0000   Max.   :0          Max.   :225.000   Max.   :215.000   Max.   :225.0000  
+                                                                                                                                                     
+ # CH_C_EMB_CANT_TOTAL CH_ANU_CANT_GS   CH_EXT_CANT_GS    CH_SUS_CANT_GS     CH_C_EMB_CANT_GS CH_ANU_CANT_OTR_MON CH_EXT_CANT_OTR_MON CH_SUS_CANT_OTR_MON
+ # Min.   :0           Min.   :  0.00   Min.   :  0.000   Min.   :  0.0000   Min.   :0        Min.   : 0.00000    Min.   : 0.000000   Min.   : 0.00000   
+ # 1st Qu.:0           1st Qu.:  0.00   1st Qu.:  0.000   1st Qu.:  0.0000   1st Qu.:0        1st Qu.: 0.00000    1st Qu.: 0.000000   1st Qu.: 0.00000   
+ # Median :0           Median :  0.00   Median :  0.000   Median :  0.0000   Median :0        Median : 0.00000    Median : 0.000000   Median : 0.00000   
+ # Mean   :0           Mean   :  1.43   Mean   :  1.413   Mean   :  0.3004   Mean   :0        Mean   : 0.00518    Mean   : 0.004516   Mean   : 0.00512   
+ # 3rd Qu.:0           3rd Qu.:  0.00   3rd Qu.:  0.000   3rd Qu.:  0.0000   3rd Qu.:0        3rd Qu.: 0.00000    3rd Qu.: 0.000000   3rd Qu.: 0.00000   
+ # Max.   :0           Max.   :225.00   Max.   :215.000   Max.   :225.0000   Max.   :0        Max.   :35.00000    Max.   :25.000000   Max.   :39.00000   
+                                                                                                                                                       
+ # CH_C_EMB_CANT_OTR_MON CH_ANU_CANT_U1M    CH_EXT_CANT_U1M    CH_SUS_CANT_U1M    CH_EXT_CTA_EMB_U1M CH_ANU_CANT_U3M    CH_EXT_CANT_U3M    CH_SUS_CANT_U3M    
+ # Min.   :0             Min.   :  0.0000   Min.   :  0.0000   Min.   : 0.00000   Min.   :0          Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.00000  
+ # 1st Qu.:0             1st Qu.:  0.0000   1st Qu.:  0.0000   1st Qu.: 0.00000   1st Qu.:0          1st Qu.:  0.0000   1st Qu.:  0.0000   1st Qu.:  0.00000  
+ # Median :0             Median :  0.0000   Median :  0.0000   Median : 0.00000   Median :0          Median :  0.0000   Median :  0.0000   Median :  0.00000  
+ # Mean   :0             Mean   :  0.1978   Mean   :  0.1954   Mean   : 0.02587   Mean   :0          Mean   :  0.4415   Mean   :  0.4645   Mean   :  0.08722  
+ # 3rd Qu.:0             3rd Qu.:  0.0000   3rd Qu.:  0.0000   3rd Qu.: 0.00000   3rd Qu.:0          3rd Qu.:  0.0000   3rd Qu.:  0.0000   3rd Qu.:  0.00000  
+ # Max.   :0             Max.   :146.0000   Max.   :100.0000   Max.   :75.00000   Max.   :0          Max.   :159.0000   Max.   :166.0000   Max.   :140.00000  
+                                                                                                                                                            
+  # CH_C_EMB_U3M CH_ANU_CANT_U6M    CH_EXT_CANT_U6M    CH_SUS_CANT_U6M     CH_C_EMB_U6M CH_ANU_CANT_U12M  CH_EXT_CANT_U12M  CH_SUS_CANT_U12M   CH_C_EMB_U12M
+ # Min.   :0     Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.0000   Min.   :0     Min.   :  0.000   Min.   :  0.000   Min.   :  0.0000   Min.   :0    
+ # 1st Qu.:0     1st Qu.:  0.0000   1st Qu.:  0.0000   1st Qu.:  0.0000   1st Qu.:0     1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.0000   1st Qu.:0    
+ # Median :0     Median :  0.0000   Median :  0.0000   Median :  0.0000   Median :0     Median :  0.000   Median :  0.000   Median :  0.0000   Median :0    
+ # Mean   :0     Mean   :  0.6571   Mean   :  0.8314   Mean   :  0.1152   Mean   :0     Mean   :  0.908   Mean   :  1.043   Mean   :  0.1527   Mean   :0    
+ # 3rd Qu.:0     3rd Qu.:  0.0000   3rd Qu.:  0.0000   3rd Qu.:  0.0000   3rd Qu.:0     3rd Qu.:  0.000   3rd Qu.:  0.000   3rd Qu.:  0.0000   3rd Qu.:0    
+ # Max.   :0     Max.   :168.0000   Max.   :169.0000   Max.   :146.0000   Max.   :0     Max.   :168.000   Max.   :190.000   Max.   :146.0000   Max.   :0    
+                                                                                                                                                          
+ # CH_ANU_CANT_U24M  CH_EXT_CANT_U24M  CH_SUS_CANT_U24M   CH_C_EMB_U24M CH_ANU_CANT_U36M  CH_EXT_CANT_U36M  CH_SUS_CANT_U36M   CH_EXT_CTA_EMB_U36M
+ # Min.   :  0.000   Min.   :  0.000   Min.   :  0.0000   Min.   :0     Min.   :  0.000   Min.   :  0.000   Min.   :  0.0000   Min.   :0          
+ # 1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.0000   1st Qu.:0     1st Qu.:  0.000   1st Qu.:  0.000   1st Qu.:  0.0000   1st Qu.:0          
+ # Median :  0.000   Median :  0.000   Median :  0.0000   Median :0     Median :  0.000   Median :  0.000   Median :  0.0000   Median :0          
+ # Mean   :  1.223   Mean   :  1.242   Mean   :  0.2291   Mean   :0     Mean   :  1.371   Mean   :  1.348   Mean   :  0.2677   Mean   :0          
+ # 3rd Qu.:  0.000   3rd Qu.:  0.000   3rd Qu.:  0.0000   3rd Qu.:0     3rd Qu.:  0.000   3rd Qu.:  0.000   3rd Qu.:  0.0000   3rd Qu.:0          
+ # Max.   :225.000   Max.   :213.000   Max.   :146.0000   Max.   :0     Max.   :225.000   Max.   :215.000   Max.   :172.0000   Max.   :0          
+                                                                                                                                                
+ # CONS_PRIV_CANT_TOTAL FECHA_PRI_PRIV_      FECHA_PRI_CONS_PRIV_BANCO FECHA_PRI_CONS_PRIV_FINAN FECHA_ULT_CONS_PRIV  FECHA_ULT_CONS_PRIV_BANCO
+ # Min.   :  0.00       Min.   :2007-01-29   Min.   :2007-01-29        Min.   :2007-06-22        Min.   :2007-02-13   Min.   :2007-02-15       
+ # 1st Qu.:  2.00       1st Qu.:2009-01-06   1st Qu.:2009-01-12        1st Qu.:2009-08-06        1st Qu.:2010-12-16   1st Qu.:2010-12-09       
+ # Median :  6.00       Median :2009-09-03   Median :2009-09-09        Median :2010-07-15        Median :2013-05-27   Median :2013-05-10       
+ # Mean   : 13.05       Mean   :2010-03-10   Mean   :2010-03-20        Mean   :2011-01-22        Mean   :2012-10-10   Mean   :2012-09-18       
+ # 3rd Qu.: 16.00       3rd Qu.:2010-10-09   3rd Qu.:2010-10-22        3rd Qu.:2013-02-25        3rd Qu.:2013-12-10   3rd Qu.:2013-11-29       
+ # Max.   :198.00       Max.   :2014-08-29   Max.   :2014-08-29        Max.   :2014-09-20        Max.   :2014-09-25   Max.   :2014-09-25       
+                      # NA's   :5386         NA's   :6085              NA's   :26268             NA's   :5386         NA's   :6085             
+ # FECHA_ULT_CONS_PRIV_FINAN CONS_PRIV_CANT_BANCO CONS_PRIV_CANT_FINAN CONS_PRIV_ADMIN  CONS_PRIV_CCTE_COM  CONS_PRIV_SG      CONS_PRIV_CRED_COM CONS_PRIV_DTO_CH_DOC
+ # Min.   :2007-07-17        Min.   :  0          Min.   : 0.000       Min.   : 0.000   Min.   : 0.000     Min.   : 0.00000   Min.   : 0.0000    Min.   : 0.000      
+ # 1st Qu.:2010-10-14        1st Qu.:  2          1st Qu.: 0.000       1st Qu.: 1.000   1st Qu.: 0.000     1st Qu.: 0.00000   1st Qu.: 0.0000    1st Qu.: 0.000      
+ # Median :2013-03-12        Median :  5          Median : 0.000       Median : 3.000   Median : 2.000     Median : 0.00000   Median : 0.0000    Median : 0.000      
+ # Mean   :2012-05-17        Mean   : 11          Mean   : 1.968       Mean   : 5.893   Mean   : 2.869     Mean   : 0.02414   Mean   : 0.5349    Mean   : 3.063      
+ # 3rd Qu.:2013-10-21        3rd Qu.: 14          3rd Qu.: 2.000       3rd Qu.: 8.000   3rd Qu.: 4.000     3rd Qu.: 0.00000   3rd Qu.: 1.0000    3rd Qu.: 3.000      
+ # Max.   :2014-09-22        Max.   :146          Max.   :51.000       Max.   :84.000   Max.   :30.000     Max.   :22.00000   Max.   :21.0000    Max.   :77.000      
+ # NA's   :26268                                                                                                                                                     
+ # CONS_PRIV_CRED_IMP_CTA_EXP CONS_PRIV_PR_PER  CONS_PRIV_TARJ   CONS_PRIV_OTROS   CONS_PRIV_BANCO_ADMIN CONS_PRIV_BANCO_CCTE_COM CONS_PRIV_BANCO_SG
+ # Min.   :0.00000            Min.   : 0.0000   Min.   :0.0000   Min.   : 0.0000   Min.   : 0.000        Min.   : 0.000           Min.   : 0.00000  
+ # 1st Qu.:0.00000            1st Qu.: 0.0000   1st Qu.:0.0000   1st Qu.: 0.0000   1st Qu.: 1.000        1st Qu.: 0.000           1st Qu.: 0.00000  
+ # Median :0.00000            Median : 0.0000   Median :0.0000   Median : 0.0000   Median : 2.000        Median : 2.000           Median : 0.00000  
+ # Mean   :0.00289            Mean   : 0.2967   Mean   :0.1303   Mean   : 0.1443   Mean   : 4.912        Mean   : 2.846           Mean   : 0.02414  
+ # 3rd Qu.:0.00000            3rd Qu.: 0.0000   3rd Qu.:0.0000   3rd Qu.: 0.0000   3rd Qu.: 6.000        3rd Qu.: 4.000           3rd Qu.: 0.00000  
+ # Max.   :1.00000            Max.   :11.0000   Max.   :7.0000   Max.   :22.0000   Max.   :69.000        Max.   :30.000           Max.   :22.00000  
+                                                                                                                                                  
+ # CONS_PRIV_BANCO_CRED_COM CONS_PRIV_BANCO_DTO_CH_DOC CONS_PRIV_BANCO_CRED_I_C_E CONS_PRIV_BANCO_PR_PER CONS_PRIV_BANCO_TARJ CONS_PRIV_BANCO_OTROS
+ # Min.   : 0.0000          Min.   : 0.000             Min.   :0.00000            Min.   : 0.0000        Min.   :0.0000       Min.   : 0.0000      
+ # 1st Qu.: 0.0000          1st Qu.: 0.000             1st Qu.:0.00000            1st Qu.: 0.0000        1st Qu.:0.0000       1st Qu.: 0.0000      
+ # Median : 0.0000          Median : 0.000             Median :0.00000            Median : 0.0000        Median :0.0000       Median : 0.0000      
+ # Mean   : 0.2587          Mean   : 2.534             Mean   :0.00275            Mean   : 0.1972        Mean   :0.1287       Mean   : 0.1195      
+ # 3rd Qu.: 0.0000          3rd Qu.: 2.000             3rd Qu.:0.00000            3rd Qu.: 0.0000        3rd Qu.:0.0000       3rd Qu.: 0.0000      
+ # Max.   :10.0000          Max.   :53.000             Max.   :1.00000            Max.   :11.0000        Max.   :7.0000       Max.   :22.0000      
+                                                                                                                                                 
+ # CONS_PRIV_FINAN_ADMIN CONS_PRIV_FINAN_CCTE_COM CONS_PRIV_FINAN_SG CONS_PRIV_FINAN_CRED_COM CONS_PRIV_FINAN_DTO_CH_DOC CONS_PRIV_FINAN_CRED_I_C_E
+ # Min.   : 0.0000       Min.   :0.00000          Min.   :0          Min.   : 0.0000          Min.   : 0.0000            Min.   :0.0000000         
+ # 1st Qu.: 0.0000       1st Qu.:0.00000          1st Qu.:0          1st Qu.: 0.0000          1st Qu.: 0.0000            1st Qu.:0.0000000         
+ # Median : 0.0000       Median :0.00000          Median :0          Median : 0.0000          Median : 0.0000            Median :0.0000000         
+ # Mean   : 0.9803       Mean   :0.02304          Mean   :0          Mean   : 0.2763          Mean   : 0.5288            Mean   :0.0001405         
+ # 3rd Qu.: 1.0000       3rd Qu.:0.00000          3rd Qu.:0          3rd Qu.: 0.0000          3rd Qu.: 0.0000            3rd Qu.:0.0000000         
+ # Max.   :25.0000       Max.   :5.00000          Max.   :0          Max.   :18.0000          Max.   :25.0000            Max.   :1.0000000         
+                                                                                                                                                 
+ # CONS_PRIV_FINAN_PR_PER CONS_PRIV_FINAN_TARJ CONS_PRIV_FINAN_OTROS CONS_PRIV_CANT_DIST_ENT CONS_PRIV_DIST_ENT_ADMIN CONS_PRIV_DIST_ENT_CTE_CA_COM
+ # Min.   : 0.00000       Min.   :0.000000     Min.   :0.00000       Min.   : 0.00           Min.   : 0.000           Min.   :0.000                
+ # 1st Qu.: 0.00000       1st Qu.:0.000000     1st Qu.:0.00000       1st Qu.: 2.00           1st Qu.: 1.000           1st Qu.:0.000                
+ # Median : 0.00000       Median :0.000000     Median :0.00000       Median : 4.00           Median : 2.000           Median :1.000                
+ # Mean   : 0.09872       Mean   :0.001586     Mean   :0.02479       Mean   : 4.66           Mean   : 3.038           Mean   :1.259                
+ # 3rd Qu.: 0.00000       3rd Qu.:0.000000     3rd Qu.:0.00000       3rd Qu.: 7.00           3rd Qu.: 5.000           3rd Qu.:2.000                
+ # Max.   :10.00000       Max.   :1.000000     Max.   :6.00000       Max.   :25.00           Max.   :22.000           Max.   :8.000                
+                                                                                                                                                 
+ # CONS_PRIV_DIST_ENT_SG CONS_PRIV_DIST_ENT_CRED_COM CONS_PRIV_DIST_ENT_DTO_CH_DOC CONS_PRIV_DIST_ENT_CRED_I_C_E CONS_PRIV_DIST_ENT_PR_PER CONS_PRIV_DIST_ENT_TARJ
+ # Min.   :0.0000        Min.   :0.0000              Min.   : 0.000                Min.   :0.00000               Min.   :0.0000            Min.   :0.0000         
+ # 1st Qu.:0.0000        1st Qu.:0.0000              1st Qu.: 0.000                1st Qu.:0.00000               1st Qu.:0.0000            1st Qu.:0.0000         
+ # Median :0.0000        Median :0.0000              Median : 0.000                Median :0.00000               Median :0.0000            Median :0.0000         
+ # Mean   :0.0171        Mean   :0.3729              Mean   : 1.354                Mean   :0.00289               Mean   :0.2412            Mean   :0.1188         
+ # 3rd Qu.:0.0000        3rd Qu.:1.0000              3rd Qu.: 2.000                3rd Qu.:0.00000               3rd Qu.:0.0000            3rd Qu.:0.0000         
+ # Max.   :2.0000        Max.   :8.0000              Max.   :15.000                Max.   :1.00000               Max.   :6.0000            Max.   :4.0000         
+                                                                                                                                                                
+ # CONS_PRIV_DIST_ENT_OTROS CONS_PRIV_MAX_ENT CONS_PRIV_MAX_ENT_ADMIN CONS_PRIV_MAX_ENT_CTE_CA_COM CONS_PRIV_MAX_ENT_SG CONS_PRIV_MAX_ENT_CRED_COM
+ # Min.   :0.0000           Min.   : 0.000    Min.   : 0.000          Min.   : 0.000               Min.   : 0.00000     Min.   : 0.0000           
+ # 1st Qu.:0.0000           1st Qu.: 1.000    1st Qu.: 1.000          1st Qu.: 0.000               1st Qu.: 0.00000     1st Qu.: 0.0000           
+ # Median :0.0000           Median : 3.000    Median : 2.000          Median : 1.000               Median : 0.00000     Median : 0.0000           
+ # Mean   :0.1012           Mean   : 4.528    Mean   : 2.206          Mean   : 1.993               Mean   : 0.02392     Mean   : 0.4044           
+ # 3rd Qu.:0.0000           3rd Qu.: 6.000    3rd Qu.: 3.000          3rd Qu.: 3.000               3rd Qu.: 0.00000     3rd Qu.: 1.0000           
+ # Max.   :5.0000           Max.   :47.000    Max.   :24.000          Max.   :17.000               Max.   :22.00000     Max.   :12.0000           
+                                                                                                                                                
+ # CONS_PRIV_MAX_ENT_DTO_CH_DOC CONS_PRIV_MAX_ENT_CRED_I_C_E CONS_PRIV_MAX_ENT_PR_PER CONS_PRIV_MAX_ENT_TARJ CONS_PRIV_MAX_ENT_OTROS ID_ORIGEN     
+ # Min.   : 0.000               Min.   :0.00000              Min.   : 0.000           Min.   :0.0000         Min.   :0.00            Mode:logical  
+ # 1st Qu.: 0.000               1st Qu.:0.00000              1st Qu.: 0.000           1st Qu.:0.0000         1st Qu.:0.00            NA's:49827    
+ # Median : 0.000               Median :0.00000              Median : 0.000           Median :0.0000         Median :0.00                          
+ # Mean   : 1.391               Mean   :0.00289              Mean   : 0.252           Mean   :0.1206         Mean   :0.11                          
+ # 3rd Qu.: 2.000               3rd Qu.:0.00000              3rd Qu.: 0.000           3rd Qu.:0.0000         3rd Qu.:0.00                          
+ # Max.   :20.000               Max.   :1.00000              Max.   :10.000           Max.   :5.0000         Max.   :7.00                          
+                                                                                                                                                 
+ # CH_RE_TEXT_ENM_U6M  CH_RE_SIN_FIRM_U6M CH_RE_FECH_ENM_U6M  CH_RE_SIN_1_FIRM_U6M CH_RE_SIN_FIRM_SAL_U6M CH_RE_CIF_ENM_U6M  CH_RE_TEXT_DEF_U6M CH_RE_FIRM_DEF_U6M
+ # Min.   :0.0000000   Min.   :0.00000    Min.   :0.0000000   Min.   :0            Min.   :0              Min.   :0.00e+00   Min.   : 0.0000    Min.   : 0.0000   
+ # 1st Qu.:0.0000000   1st Qu.:0.00000    1st Qu.:0.0000000   1st Qu.:0            1st Qu.:0              1st Qu.:0.00e+00   1st Qu.: 0.0000    1st Qu.: 0.0000   
+ # Median :0.0000000   Median :0.00000    Median :0.0000000   Median :0            Median :0              Median :0.00e+00   Median : 0.0000    Median : 0.0000   
+ # Mean   :0.0002007   Mean   :0.02539    Mean   :0.0006422   Mean   :0            Mean   :0              Mean   :4.01e-05   Mean   : 0.4707    Mean   : 0.1204   
+ # 3rd Qu.:0.0000000   3rd Qu.:0.00000    3rd Qu.:0.0000000   3rd Qu.:0            3rd Qu.:0              3rd Qu.:0.00e+00   3rd Qu.: 1.0000    3rd Qu.: 0.0000   
+ # Max.   :1.0000000   Max.   :9.00000    Max.   :2.0000000   Max.   :0            Max.   :0              Max.   :1.00e+00   Max.   :12.0000    Max.   :25.0000   
+                                                                                                                                                                
+ # CH_RE_FECH_VENC_U6M CH_RE_FIRM_INH_U6M CH_RE_END_DEF_U6M CH_RE_CTA_BLOQ_U6M CH_RE_NO_VAL_U6M CH_RE_PREST_EXT_U6M CH_RE_ORD_NO_PA_U6M CH_RE_INH_OPER_U6M
+ # Min.   :0.00000     Min.   : 0.00000   Min.   : 0.0000   Min.   :0          Min.   : 0.000   Min.   : 0.0000     Min.   :  0.0000    Min.   :  0.000   
+ # 1st Qu.:0.00000     1st Qu.: 0.00000   1st Qu.: 0.0000   1st Qu.:0          1st Qu.: 0.000   1st Qu.: 0.0000     1st Qu.:  0.0000    1st Qu.:  0.000   
+ # Median :0.00000     Median : 0.00000   Median : 0.0000   Median :0          Median : 0.000   Median : 0.0000     Median :  0.0000    Median :  0.000   
+ # Mean   :0.02167     Mean   : 0.03404   Mean   : 0.6679   Mean   :0          Mean   : 0.183   Mean   : 0.2115     Mean   :  0.9743    Mean   :  1.713   
+ # 3rd Qu.:0.00000     3rd Qu.: 0.00000   3rd Qu.: 0.0000   3rd Qu.:0          3rd Qu.: 0.000   3rd Qu.: 0.0000     3rd Qu.:  0.0000    3rd Qu.:  0.000   
+ # Max.   :6.00000     Max.   :65.00000   Max.   :77.0000   Max.   :0          Max.   :17.000   Max.   :49.0000     Max.   :251.0000    Max.   :233.000   
+                                                                                                                                                        
+ # CH_RE_TEXT_INC_U6M CH_RE_FECH_DEF_U6M
+ # Min.   :0          Min.   : 0.000    
+ # 1st Qu.:0          1st Qu.: 0.000    
+ # Median :0          Median : 0.000    
+ # Mean   :0          Mean   : 0.195    
+ # 3rd Qu.:0          3rd Qu.: 0.000    
+ # Max.   :0          Max.   :43.000 
+
+datos$ID_ORIGEN<-NULL
+
+
+summary(datos[datos$TARGET==0,])
+
+   # inf_id       FECHA_ORIGINACION        TARGET    inf_ficha         inf_documento   inf_fecha_solicitud       edad        inf_es_trab_autonomo inf_tuvo_cons
+ # Min.   :     2   Min.   :2012-11-01   Min.   :0   Min.   :     22   1.000.019:    1   Min.   :2012-11-01   Min.   : 19.00   0:64801              0: 1049      
+ # 1st Qu.: 37457   1st Qu.:2013-05-04   1st Qu.:0   1st Qu.: 661197   1.000.070:    1   1st Qu.:2013-05-04   1st Qu.: 35.00   1: 5147              1:68899      
+ # Median : 74690   Median :2013-11-02   Median :0   Median :1590949   1.000.152:    1   Median :2013-11-02   Median : 43.00                                     
+ # Mean   : 74868   Mean   :2013-11-01   Mean   :0   Mean   :1868961   1.000.168:    1   Mean   :2013-11-01   Mean   : 45.53                                     
+ # 3rd Qu.:112415   3rd Qu.:2014-05-02   3rd Qu.:0   3rd Qu.:2916688   1.000.192:    1   3rd Qu.:2014-05-02   3rd Qu.: 54.00                                     
+ # Max.   :150000   Max.   :2014-10-31   Max.   :0   Max.   :5670712   1.000.234:    1   Max.   :2014-10-31   Max.   :100.00                                     
+                                                                     # (Other)  :69942                        NA's   :3                                          
+ # inf_cons_cant_total inf_cons_cant_u1m inf_cons_cant_u3m inf_cons_cant_u6m inf_cons_cant_u12m inf_cons_cant_u24m inf_cons_cant_total_cable inf_cons_cant_cable_u1m
+ # Min.   :  0.00      Min.   : 0.0000   Min.   : 0.000    Min.   : 0.000    Min.   : 0.000     Min.   : 0.000     Min.   :0.00000           Min.   :0.00e+00       
+ # 1st Qu.:  7.00      1st Qu.: 0.0000   1st Qu.: 0.000    1st Qu.: 1.000    1st Qu.: 1.000     1st Qu.: 3.000     1st Qu.:0.00000           1st Qu.:0.00e+00       
+ # Median : 15.00      Median : 0.0000   Median : 1.000    Median : 2.000    Median : 4.000     Median : 7.000     Median :0.00000           Median :0.00e+00       
+ # Mean   : 18.66      Mean   : 0.4063   Mean   : 1.182    Mean   : 2.338    Mean   : 4.544     Mean   : 8.654     Mean   :0.01002           Mean   :8.58e-05       
+ # 3rd Qu.: 26.00      3rd Qu.: 1.0000   3rd Qu.: 2.000    3rd Qu.: 3.000    3rd Qu.: 6.000     3rd Qu.:12.000     3rd Qu.:0.00000           3rd Qu.:0.00e+00       
+ # Max.   :177.00      Max.   :14.0000   Max.   :26.000    Max.   :37.000    Max.   :58.000     Max.   :85.000     Max.   :4.00000           Max.   :1.00e+00       
+                                                                                                                                                                  
+ # inf_cons_cant_cable_u3m inf_cons_cant_cable_u6m inf_cons_cant_cable_u12m inf_cons_cant_cable_u24m inf_cons_cant_total_comercio inf_cons_cant_comercio_u1m
+ # Min.   :0.0000000       Min.   :0.0000000       Min.   :0.000000         Min.   :0.000000         Min.   : 0.000               Min.   : 0.00000          
+ # 1st Qu.:0.0000000       1st Qu.:0.0000000       1st Qu.:0.000000         1st Qu.:0.000000         1st Qu.: 0.000               1st Qu.: 0.00000          
+ # Median :0.0000000       Median :0.0000000       Median :0.000000         Median :0.000000         Median : 2.000               Median : 0.00000          
+ # Mean   :0.0002287       Mean   :0.0005147       Mean   :0.001172         Mean   :0.002702         Mean   : 2.852               Mean   : 0.05949          
+ # 3rd Qu.:0.0000000       3rd Qu.:0.0000000       3rd Qu.:0.000000         3rd Qu.:0.000000         3rd Qu.: 4.000               3rd Qu.: 0.00000          
+ # Max.   :1.0000000       Max.   :1.0000000       Max.   :1.000000         Max.   :2.000000         Max.   :45.000               Max.   :10.00000          
+                                                                                                                                                          
+ # inf_cons_cant_comercio_u3m inf_cons_cant_comercio_u6m inf_cons_cant_comercio_u12m inf_cons_cant_comercio_u24m inf_cons_cant_total_ccredito
+ # Min.   : 0.0000            Min.   : 0.0000            Min.   : 0.0000             Min.   : 0.000              Min.   : 0.000              
+ # 1st Qu.: 0.0000            1st Qu.: 0.0000            1st Qu.: 0.0000             1st Qu.: 0.000              1st Qu.: 0.000              
+ # Median : 0.0000            Median : 0.0000            Median : 0.0000             Median : 1.000              Median : 0.000              
+ # Mean   : 0.1728            Mean   : 0.3376            Mean   : 0.6629             Mean   : 1.302              Mean   : 0.889              
+ # 3rd Qu.: 0.0000            3rd Qu.: 0.0000            3rd Qu.: 1.0000             3rd Qu.: 2.000              3rd Qu.: 1.000              
+ # Max.   :13.0000            Max.   :13.0000            Max.   :14.0000             Max.   :27.000              Max.   :51.000              
+                                                                                                                                           
+ # inf_cons_cant_ccredito_u1m inf_cons_cant_ccredito_u3m inf_cons_cant_ccredito_u6m inf_cons_cant_ccredito_u12m inf_cons_cant_ccredito_u24m inf_cons_cant_total_otros
+ # Min.   :0.00000            Min.   :0.0000             Min.   : 0.0000            Min.   : 0.000              Min.   : 0.000              Min.   : 0.000           
+ # 1st Qu.:0.00000            1st Qu.:0.0000             1st Qu.: 0.0000            1st Qu.: 0.000              1st Qu.: 0.000              1st Qu.: 0.000           
+ # Median :0.00000            Median :0.0000             Median : 0.0000            Median : 0.000              Median : 0.000              Median : 1.000           
+ # Mean   :0.02856            Mean   :0.0791             Mean   : 0.1524            Mean   : 0.282              Mean   : 0.495              Mean   : 1.253           
+ # 3rd Qu.:0.00000            3rd Qu.:0.0000             3rd Qu.: 0.0000            3rd Qu.: 0.000              3rd Qu.: 0.000              3rd Qu.: 2.000           
+ # Max.   :5.00000            Max.   :9.0000             Max.   :16.0000            Max.   :17.000              Max.   :26.000              Max.   :72.000           
+                                                                                                                                                                   
+ # inf_cons_cant_otros_u1m inf_cons_cant_otros_u3m inf_cons_cant_otros_u6m inf_cons_cant_otros_u12m inf_cons_cant_otros_u24m inf_cons_cant_total_sf
+ # Min.   :0.00000         Min.   :0.0000          Min.   : 0.0000         Min.   : 0.0000          Min.   : 0.0000          Min.   :  0.00        
+ # 1st Qu.:0.00000         1st Qu.:0.0000          1st Qu.: 0.0000         1st Qu.: 0.0000          1st Qu.: 0.0000          1st Qu.:  4.00        
+ # Median :0.00000         Median :0.0000          Median : 0.0000         Median : 0.0000          Median : 0.0000          Median : 10.00        
+ # Mean   :0.02632         Mean   :0.0756          Mean   : 0.1499         Mean   : 0.2959          Mean   : 0.5702          Mean   : 12.11        
+ # 3rd Qu.:0.00000         3rd Qu.:0.0000          3rd Qu.: 0.0000         3rd Qu.: 0.0000          3rd Qu.: 1.0000          3rd Qu.: 17.00        
+ # Max.   :4.00000         Max.   :8.0000          Max.   :12.0000         Max.   :33.0000          Max.   :38.0000          Max.   :128.00        
+                                                                                                                                                 
+ # inf_cons_cant_sf_u1m inf_cons_cant_sf_u3m inf_cons_cant_sf_u6m inf_cons_cant_sf_u12m inf_cons_cant_sf_u24m inf_cons_cant_total_spub inf_cons_cant_spub_u1m
+ # Min.   :0.0000       Min.   : 0.0000      Min.   : 0.000       Min.   : 0.000        Min.   : 0.00         Min.   : 0.00000         Min.   :0.000000      
+ # 1st Qu.:0.0000       1st Qu.: 0.0000      1st Qu.: 0.000       1st Qu.: 1.000        1st Qu.: 2.00         1st Qu.: 0.00000         1st Qu.:0.000000      
+ # Median :0.0000       Median : 0.0000      Median : 1.000       Median : 2.000        Median : 4.00         Median : 0.00000         Median :0.000000      
+ # Mean   :0.2554       Mean   : 0.7472      Mean   : 1.484       Mean   : 2.874        Mean   : 5.47         Mean   : 0.08556         Mean   :0.001387      
+ # 3rd Qu.:0.0000       3rd Qu.: 1.0000      3rd Qu.: 2.000       3rd Qu.: 4.000        3rd Qu.: 8.00         3rd Qu.: 0.00000         3rd Qu.:0.000000      
+ # Max.   :8.0000       Max.   :14.0000      Max.   :22.000       Max.   :33.000        Max.   :64.00         Max.   :18.00000         Max.   :1.000000      
+                                                                                                                                                           
+ # inf_cons_cant_spub_u3m inf_cons_cant_spub_u6m inf_cons_cant_spub_u12m inf_cons_cant_spub_u24m inf_cons_cant_total_telco inf_cons_cant_telco_u1m
+ # Min.   :0.000000       Min.   :0.000000       Min.   :0.00000         Min.   : 0.00000        Min.   : 0.00             Min.   :0.00000        
+ # 1st Qu.:0.000000       1st Qu.:0.000000       1st Qu.:0.00000         1st Qu.: 0.00000        1st Qu.: 0.00             1st Qu.:0.00000        
+ # Median :0.000000       Median :0.000000       Median :0.00000         Median : 0.00000        Median : 1.00             Median :0.00000        
+ # Mean   :0.004103       Mean   :0.008106       Mean   :0.01704         Mean   : 0.03375        Mean   : 1.46             Mean   :0.03504        
+ # 3rd Qu.:0.000000       3rd Qu.:0.000000       3rd Qu.:0.00000         3rd Qu.: 0.00000        3rd Qu.: 2.00             3rd Qu.:0.00000        
+ # Max.   :2.000000       Max.   :3.000000       Max.   :6.00000         Max.   :14.00000        Max.   :35.00             Max.   :3.00000        
+                                                                                                                                                
+ # inf_cons_cant_telco_u3m inf_cons_cant_telco_u6m inf_cons_cant_telco_u12m inf_cons_cant_telco_u24m inf_1_o_mas_sol_cable_u6m inf_2_o_mas_sol_cable_u6m
+ # Min.   :0.0000          Min.   :0.0000          Min.   : 0.0000          Min.   : 0.0000          0:69912                   0:69948                  
+ # 1st Qu.:0.0000          1st Qu.:0.0000          1st Qu.: 0.0000          1st Qu.: 0.0000          1:   36                                            
+ # Median :0.0000          Median :0.0000          Median : 0.0000          Median : 0.0000                                                             
+ # Mean   :0.1028          Mean   :0.2048          Mean   : 0.4114          Mean   : 0.7801                                                             
+ # 3rd Qu.:0.0000          3rd Qu.:0.0000          3rd Qu.: 1.0000          3rd Qu.: 1.0000                                                             
+ # Max.   :5.0000          Max.   :9.0000          Max.   :14.0000          Max.   :21.0000                                                             
+                                                                                                                                                      
+ # inf_3_o_mas_sol_cable_u6m inf_4_o_mas_sol_cable_u6m inf_5_o_mas_sol_cable_u6m inf_1_o_mas_sol_comercio_u6m inf_2_o_mas_sol_comercio_u6m
+ # 0:69948                   0:69948                   0:69948                   0:52812                      0:66263                     
+                                                                               # 1:17136                      1: 3685                     
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
+                                                                                                                                        
+ # inf_3_o_mas_sol_comercio_u6m inf_4_o_mas_sol_comercio_u6m inf_5_o_mas_sol_comercio_u6m inf_1_o_mas_sol_ccredito_u6m inf_2_o_mas_sol_ccredito_u6m
+ # 0:69142                      0:69743                      0:69894                      0:62975                      0:68245                     
+ # 1:  806                      1:  205                      1:   54                      1: 6973                      1: 1703                     
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 
+ # inf_3_o_mas_sol_ccredito_u6m inf_4_o_mas_sol_ccredito_u6m inf_5_o_mas_sol_ccredito_u6m inf_1_o_mas_sol_otros_u6m inf_2_o_mas_sol_otros_u6m
+ # 0:69457                      0:69798                      0:69902                      0:61472                   0:68800                  
+ # 1:  491                      1:  150                      1:   46                      1: 8476                   1: 1148                  
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+ # inf_3_o_mas_sol_otros_u6m inf_4_o_mas_sol_otros_u6m inf_5_o_mas_sol_otros_u6m inf_1_o_mas_sol_sf_u6m inf_2_o_mas_sol_sf_u6m inf_3_o_mas_sol_sf_u6m
+ # 0:69754                   0:69890                   0:69924                   0:24765                0:44727                0:57323               
+ # 1:  194                   1:   58                   1:   24                   1:45183                1:25221                1:12625               
+                                                                                                                                                   
+                                                                                                                                                   
+                                                                                                                                                   
+                                                                                                                                                   
+                                                                                                                                                   
+ # inf_4_o_mas_sol_sf_u6m inf_5_o_mas_sol_sf_u6m inf_1_o_mas_sol_spub_u6m inf_2_o_mas_sol_spub_u6m inf_3_o_mas_sol_spub_u6m inf_4_o_mas_sol_spub_u6m
+ # 0:63935                0:67193                0:69402                  0:69944                  0:69948                  0:69948                 
+ # 1: 6013                1: 2755                1:  546                  1:    4                                                                   
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+ # inf_5_o_mas_sol_spub_u6m inf_1_o_mas_sol_telco_u6m inf_2_o_mas_sol_telco_u6m inf_3_o_mas_sol_telco_u6m inf_4_o_mas_sol_telco_u6m inf_5_o_mas_sol_telco_u6m
+ # 0:69948                  0:57670                   0:68927                   0:69894                   0:69946                   0:69948                  
+                          # 1:12278                   1: 1021                   1:   54                   1:    2                                            
+                                                                                                                                                           
+                                                                                                                                                           
+                                                                                                                                                           
+                                                                                                                                                           
+                                                                                                                                                           
+ # inf_dem_cant_abiertas_sf inf_dem_cant_abiertas_spub inf_dem_cant_abiertas_telco inf_dem_cant_abiertas_cable inf_dem_cant_abiertas_ccredito
+ # Min.   :0.00000          Min.   :0.0000000          Min.   :0.0000000           Min.   :0                   Min.   :0.00000               
+ # 1st Qu.:0.00000          1st Qu.:0.0000000          1st Qu.:0.0000000           1st Qu.:0                   1st Qu.:0.00000               
+ # Median :0.00000          Median :0.0000000          Median :0.0000000           Median :0                   Median :0.00000               
+ # Mean   :0.01344          Mean   :0.0001859          Mean   :0.0009722           Mean   :0                   Mean   :0.00772               
+ # 3rd Qu.:0.00000          3rd Qu.:0.0000000          3rd Qu.:0.0000000           3rd Qu.:0                   3rd Qu.:0.00000               
+ # Max.   :8.00000          Max.   :1.0000000          Max.   :2.0000000           Max.   :0                   Max.   :8.00000               
+                                                                                                                                           
+ # inf_dem_cant_abiertas_comercio inf_dem_cant_abiertas_otros inf_dem_cant_abiertas inf_dem_camt_finiq_u01mes inf_dem_camt_finiq_u02mes inf_dem_camt_finiq_u03mes
+ # Min.   :0.000000               Min.   :0.000000            Min.   : 0.00000      Min.   :0.0000000         Min.   :0.0000000         Min.   :0.000000         
+ # 1st Qu.:0.000000               1st Qu.:0.000000            1st Qu.: 0.00000      1st Qu.:0.0000000         1st Qu.:0.0000000         1st Qu.:0.000000         
+ # Median :0.000000               Median :0.000000            Median : 0.00000      Median :0.0000000         Median :0.0000000         Median :0.000000         
+ # Mean   :0.002087               Mean   :0.005933            Mean   : 0.03867      Mean   :0.0004003         Mean   :0.0008006         Mean   :0.001172         
+ # 3rd Qu.:0.000000               3rd Qu.:0.000000            3rd Qu.: 0.00000      3rd Qu.:0.0000000         3rd Qu.:0.0000000         3rd Qu.:0.000000         
+ # Max.   :2.000000               Max.   :5.000000            Max.   :20.00000      Max.   :1.0000000         Max.   :3.0000000         Max.   :3.000000         
+                                                                                                                                                               
+ # inf_dem_camt_finiq_u04mes inf_dem_camt_finiq_u05mes inf_dem_camt_finiq_u06mes inf_dem_camt_finiq_u09mes inf_dem_camt_finiq_u12mes inf_dem_camt_finiq_u18mes
+ # Min.   :0.000000          Min.   :0.000000          Min.   :0.000000          Min.   :0.000000          Min.   :0.00000           Min.   :0.000000         
+ # 1st Qu.:0.000000          1st Qu.:0.000000          1st Qu.:0.000000          1st Qu.:0.000000          1st Qu.:0.00000           1st Qu.:0.000000         
+ # Median :0.000000          Median :0.000000          Median :0.000000          Median :0.000000          Median :0.00000           Median :0.000000         
+ # Mean   :0.001501          Mean   :0.002016          Mean   :0.002559          Mean   :0.004232          Mean   :0.00539           Mean   :0.007591         
+ # 3rd Qu.:0.000000          3rd Qu.:0.000000          3rd Qu.:0.000000          3rd Qu.:0.000000          3rd Qu.:0.00000           3rd Qu.:0.000000         
+ # Max.   :3.000000          Max.   :4.000000          Max.   :4.000000          Max.   :4.000000          Max.   :4.00000           Max.   :5.000000         
+                                                                                                                                                            
+ # inf_dem_camt_finiq_u24mes inf_dem_camt_finiq_u30mes inf_dem_camt_finiq_u36mes inf_conv_cant_abiertas inf_inhib_cant_abiertas inf_qui_cant_abiertas
+ # Min.   :0.000000          Min.   : 0.000000         Min.   : 0.000000         Min.   :0.0000000      Min.   :0.000000        Min.   :0            
+ # 1st Qu.:0.000000          1st Qu.: 0.000000         1st Qu.: 0.000000         1st Qu.:0.0000000      1st Qu.:0.000000        1st Qu.:0            
+ # Median :0.000000          Median : 0.000000         Median : 0.000000         Median :0.0000000      Median :0.000000        Median :0            
+ # Mean   :0.009264          Mean   : 0.009907         Mean   : 0.009922         Mean   :0.0001144      Mean   :0.007377        Mean   :0            
+ # 3rd Qu.:0.000000          3rd Qu.: 0.000000         3rd Qu.: 0.000000         3rd Qu.:0.0000000      3rd Qu.:0.000000        3rd Qu.:0            
+ # Max.   :9.000000          Max.   :11.000000         Max.   :11.000000         Max.   :1.0000000      Max.   :6.000000        Max.   :0            
+                                                                                                                                                   
+ # inf_rem_cant_abiertas inf_inc_cant_abiertas inf_mor_cant_abiertas_sf inf_mor_cant_abiertas_spub inf_mor_cant_abiertas_telco inf_mor_cant_abiertas_cable
+ # Min.   :0.0000000     Min.   :0.00e+00      Min.   : 0.00000         Min.   :0.000000           Min.   : 0.00000            Min.   :0.0000000          
+ # 1st Qu.:0.0000000     1st Qu.:0.00e+00      1st Qu.: 0.00000         1st Qu.:0.000000           1st Qu.: 0.00000            1st Qu.:0.0000000          
+ # Median :0.0000000     Median :0.00e+00      Median : 0.00000         Median :0.000000           Median : 0.00000            Median :0.0000000          
+ # Mean   :0.0002001     Mean   :5.72e-05      Mean   : 0.06624         Mean   :0.002616           Mean   : 0.05822            Mean   :0.0004575          
+ # 3rd Qu.:0.0000000     3rd Qu.:0.00e+00      3rd Qu.: 0.00000         3rd Qu.:0.000000           3rd Qu.: 0.00000            3rd Qu.:0.0000000          
+ # Max.   :2.0000000     Max.   :1.00e+00      Max.   :13.00000         Max.   :3.000000           Max.   :19.00000            Max.   :2.0000000          
+                                                                                                                                                        
+ # inf_mor_cant_abiertas_ccredito inf_mor_cant_abiertas_comercio inf_mor_cant_abiertas_otros inf_mor_cant_abiertas inf_mor_max_dias_atraso inf_morce_cant_abiertas_sf
+ # Min.   : 0.00000               Min.   :0.00000                Min.   :0.00000             Min.   : 0.0000       Min.   :   0.0          Min.   :0.00000           
+ # 1st Qu.: 0.00000               1st Qu.:0.00000                1st Qu.:0.00000             1st Qu.: 0.0000       1st Qu.:   0.0          1st Qu.:0.00000           
+ # Median : 0.00000               Median :0.00000                Median :0.00000             Median : 0.0000       Median :   0.0          Median :0.00000           
+ # Mean   : 0.05048               Mean   :0.03648                Mean   :0.01494             Mean   : 0.2269       Mean   :  58.4          Mean   :0.05165           
+ # 3rd Qu.: 0.00000               3rd Qu.:0.00000                3rd Qu.:0.00000             3rd Qu.: 0.0000       3rd Qu.:   0.0          3rd Qu.:0.00000           
+ # Max.   :10.00000               Max.   :7.00000                Max.   :6.00000             Max.   :30.0000       Max.   :3774.0          Max.   :8.00000           
+                                                                                                                                                                   
+ # inf_morce_cant_abiertas_spub inf_morce_cant_abiertas_telco inf_morce_cant_abiertas_cable inf_morce_cant_abiertas_ccredi inf_morce_cant_abiertas_comerc
+ # Min.   :0                    Min.   :0                     Min.   :0                     Min.   :0                      Min.   :0                     
+ # 1st Qu.:0                    1st Qu.:0                     1st Qu.:0                     1st Qu.:0                      1st Qu.:0                     
+ # Median :0                    Median :0                     Median :0                     Median :0                      Median :0                     
+ # Mean   :0                    Mean   :0                     Mean   :0                     Mean   :0                      Mean   :0                     
+ # 3rd Qu.:0                    3rd Qu.:0                     3rd Qu.:0                     3rd Qu.:0                      3rd Qu.:0                     
+ # Max.   :0                    Max.   :0                     Max.   :0                     Max.   :0                      Max.   :0                     
+                                                                                                                                                       
+ # inf_morce_cant_abiertas_otros inf_morce_cant_abiertas inf_morce_max_dias_atraso inconf_morce_cant_dist_afi inf_morce_tuvo_en_u6m SITUACION_BANCARIA
+ # Min.   :0                     Min.   :0.00000         Min.   : 0.000            Min.   :0.0000             0: 9994               1:69733           
+ # 1st Qu.:0                     1st Qu.:0.00000         1st Qu.: 0.000            1st Qu.:0.0000             1:59954               2:   16           
+ # Median :0                     Median :0.00000         Median : 0.000            Median :0.0000                                   5:  199           
+ # Mean   :0                     Mean   :0.05165         Mean   : 2.188            Mean   :0.0404                                                     
+ # 3rd Qu.:0                     3rd Qu.:0.00000         3rd Qu.: 0.000            3rd Qu.:0.0000                                                     
+ # Max.   :0                     Max.   :8.00000         Max.   :93.000            Max.   :1.0000                                                     
+                                                                                                                                                    
+ # FECHA_OPERACION      CANT_SUSP_ACTIVAS PEOR_TIPO_FALTA PRI_FECHA_INF        ULT_FECHA_INF        CANT_INHAB_HIST     CANT_INHAB_DIST     MAX_INHAB_ENT      
+ # Min.   :2012-11-01   Min.   :0.00000   0:69749         Min.   :1997-01-20   Min.   :1997-01-31   Min.   :0.0000000   Min.   :0.0000000   Min.   :0.0000000  
+ # 1st Qu.:2013-05-04   1st Qu.:0.00000   1:  112         1st Qu.:1997-03-31   1st Qu.:1997-04-19   1st Qu.:0.0000000   1st Qu.:0.0000000   1st Qu.:0.0000000  
+ # Median :2013-11-02   Median :0.00000   2:   82         Median :1997-08-13   Median :1997-08-21   Median :0.0000000   Median :0.0000000   Median :0.0000000  
+ # Mean   :2013-11-01   Mean   :0.00376   3:    0         Mean   :1998-07-22   Mean   :1998-08-07   Mean   :0.0001001   Mean   :0.0001001   Mean   :0.0001001  
+ # 3rd Qu.:2014-05-02   3rd Qu.:0.00000   6:    1         3rd Qu.:1998-10-25   3rd Qu.:1998-11-09   3rd Qu.:0.0000000   3rd Qu.:0.0000000   3rd Qu.:0.0000000  
+ # Max.   :2014-10-31   Max.   :3.00000   7:    4         Max.   :2011-02-23   Max.   :2011-02-23   Max.   :1.0000000   Max.   :1.0000000   Max.   :1.0000000  
+                                                        # NA's   :69749        NA's   :69749                                                                   
+ # PEOR_TIPO_FALTA_HIST PRI_FECHA_INF_HIST   ULT_FECHA_INF_HIST   CONS_CANT_TOTAL  CONS_CANT_DIST_ENT CONS_CANT_MAX_ENT FECHA_PRI_CONS       FECHA_PRI_CONS_BANCO
+ # 0:69941              Min.   :1997-07-04   Min.   :1997-07-04   Min.   : 0.000   Min.   : 0.0000    Min.   : 0.00     Min.   :2011-01-03   Min.   :2011-01-03  
+ # 1:    1              1st Qu.:1998-02-15   1st Qu.:1998-02-15   1st Qu.: 0.000   1st Qu.: 0.0000    1st Qu.: 0.00     1st Qu.:2011-04-19   1st Qu.:2011-04-26  
+ # 2:    5              Median :1999-01-29   Median :1999-01-29   Median : 1.000   Median : 1.0000    Median : 1.00     Median :2011-08-11   Median :2011-08-17  
+ # 3:    1              Mean   :1999-06-30   Mean   :1999-06-30   Mean   : 1.108   Mean   : 0.7619    Mean   : 0.82     Mean   :2011-11-23   Mean   :2011-11-29  
+ # 6:    0              3rd Qu.:2000-07-29   3rd Qu.:2000-07-29   3rd Qu.: 1.000   3rd Qu.: 1.0000    3rd Qu.: 1.00     3rd Qu.:2012-05-09   3rd Qu.:2012-05-23  
+ # 7:    0              Max.   :2002-06-26   Max.   :2002-06-26   Max.   :54.000   Max.   :14.0000    Max.   :28.00     Max.   :2014-10-24   Max.   :2014-10-24  
+                      # NA's   :69941        NA's   :69941                                                              NA's   :32823        NA's   :34794       
+ # FECHA_PRI_CONS_FINAN FECHA_PRI_CONS_PROC_TAR FECHA_PRI_CONS_COOP  FECHA_PRI_CONS_COMERCIO FECHA_ULT_CONS       FECHA_ULT_CONS_BANCO FECHA_ULT_CONS_FINAN
+ # Min.   :2011-01-03   Min.   :2011-01-06      Min.   :2011-03-07   Min.   :2011-11-14      Min.   :2011-01-03   Min.   :2011-01-03   Min.   :2011-01-03  
+ # 1st Qu.:2011-06-24   1st Qu.:2011-11-05      1st Qu.:2011-03-13   1st Qu.:2012-11-07      1st Qu.:2011-07-27   1st Qu.:2011-06-29   1st Qu.:2011-12-19  
+ # Median :2011-12-05   Median :2012-07-24      Median :2011-03-19   Median :2013-04-18      Median :2012-05-22   Median :2012-04-24   Median :2012-08-23  
+ # Mean   :2012-03-01   Mean   :2012-07-18      Mean   :2011-03-19   Mean   :2013-05-21      Mean   :2012-06-10   Mean   :2012-05-18   Mean   :2012-09-01  
+ # 3rd Qu.:2012-09-14   3rd Qu.:2013-02-28      3rd Qu.:2011-03-25   3rd Qu.:2013-11-19      3rd Qu.:2013-01-29   3rd Qu.:2012-12-11   3rd Qu.:2013-04-02  
+ # Max.   :2014-10-09   Max.   :2014-07-29      Max.   :2011-03-31   Max.   :2014-10-10      Max.   :2014-10-24   Max.   :2014-10-24   Max.   :2014-10-20  
+ # NA's   :64638        NA's   :69557           NA's   :69946        NA's   :69338           NA's   :32823        NA's   :34794        NA's   :64638       
+ # FECHA_ULT_CONS_PROC_TAR FECHA_ULT_CONS_COOP  FECHA_ULT_CONS_COMERCIO CONS_CANT_BANCO   CONS_CANT_FINAN   CONS_CANT_PROC_TAR CONS_CANT_COOP     CONS_CANT_COMERCIO
+ # Min.   :2011-01-06      Min.   :2011-03-31   Min.   :2011-11-14      Min.   : 0.0000   Min.   : 0.0000   Min.   :0.000000   Min.   :0.00e+00   Min.   : 0.00000  
+ # 1st Qu.:2011-12-16      1st Qu.:2011-04-15   1st Qu.:2012-12-13      1st Qu.: 0.0000   1st Qu.: 0.0000   1st Qu.:0.000000   1st Qu.:0.00e+00   1st Qu.: 0.00000  
+ # Median :2012-08-29      Median :2011-05-01   Median :2013-06-05      Median : 1.0000   Median : 0.0000   Median :0.000000   Median :0.00e+00   Median : 0.00000  
+ # Mean   :2012-08-18      Mean   :2011-05-01   Mean   :2013-06-23      Mean   : 0.9444   Mean   : 0.1468   Mean   :0.006219   Mean   :4.29e-05   Mean   : 0.01092  
+ # 3rd Qu.:2013-03-24      3rd Qu.:2011-05-17   3rd Qu.:2013-12-18      3rd Qu.: 1.0000   3rd Qu.: 0.0000   3rd Qu.:0.000000   3rd Qu.:0.00e+00   3rd Qu.: 0.00000  
+ # Max.   :2014-09-04      Max.   :2011-06-02   Max.   :2014-10-10      Max.   :39.0000   Max.   :22.0000   Max.   :7.000000   Max.   :2.00e+00   Max.   :14.00000  
+ # NA's   :69557           NA's   :69946        NA's   :69338                                                                                                       
+     # FECHA            CH_RE_PRIM_FECH      CH_RE_ULT_FECH       CH_RE_CANT_TOTAL   CH_RE_CANT_GIRO CH_RE_CANT_I_FOND CH_RE_CANT_DEF_F CH_RE_CANT_NO_IMPUT
+ # Min.   :2012-11-01   Min.   :2012-10-15   Min.   :2012-10-15   Min.   :0.000000   Min.   :0       Min.   :0         Min.   :0        Min.   :0.000000   
+ # 1st Qu.:2013-05-04   1st Qu.:2013-02-21   1st Qu.:2013-02-21   1st Qu.:0.000000   1st Qu.:0       1st Qu.:0         1st Qu.:0        1st Qu.:0.000000   
+ # Median :2013-11-02   Median :2013-06-02   Median :2013-06-02   Median :0.000000   Median :0       Median :0         Median :0        Median :0.000000   
+ # Mean   :2013-11-01   Mean   :2013-07-23   Mean   :2013-07-23   Mean   :0.000143   Mean   :0       Mean   :0         Mean   :0        Mean   :0.000143   
+ # 3rd Qu.:2014-05-02   3rd Qu.:2013-11-10   3rd Qu.:2013-11-10   3rd Qu.:0.000000   3rd Qu.:0       3rd Qu.:0         3rd Qu.:0        3rd Qu.:0.000000   
+ # Max.   :2014-10-31   Max.   :2014-09-08   Max.   :2014-09-08   Max.   :1.000000   Max.   :0       Max.   :0         Max.   :0        Max.   :1.000000   
+                      # NA's   :69938        NA's   :69938                                                                                                 
+ # CH_RE_CANT_U1M CH_RE_CANT_U3M     CH_RE_CANT_U6M     CH_RE_GIRO_U1M CH_RE_I_FOND_U1M CH_RE_DEF_F_U1M CH_RE_GIRO_U3M CH_RE_I_FOND_U3M CH_RE_DEF_F_U3M CH_RE_GIRO_U6M
+ # Min.   :0      Min.   :0.00e+00   Min.   :0.00e+00   Min.   :0      Min.   :0        Min.   :0       Min.   :0      Min.   :0        Min.   :0       Min.   :0     
+ # 1st Qu.:0      1st Qu.:0.00e+00   1st Qu.:0.00e+00   1st Qu.:0      1st Qu.:0        1st Qu.:0       1st Qu.:0      1st Qu.:0        1st Qu.:0       1st Qu.:0     
+ # Median :0      Median :0.00e+00   Median :0.00e+00   Median :0      Median :0        Median :0       Median :0      Median :0        Median :0       Median :0     
+ # Mean   :0      Mean   :4.29e-05   Mean   :8.58e-05   Mean   :0      Mean   :0        Mean   :0       Mean   :0      Mean   :0        Mean   :0       Mean   :0     
+ # 3rd Qu.:0      3rd Qu.:0.00e+00   3rd Qu.:0.00e+00   3rd Qu.:0      3rd Qu.:0        3rd Qu.:0       3rd Qu.:0      3rd Qu.:0        3rd Qu.:0       3rd Qu.:0     
+ # Max.   :0      Max.   :1.00e+00   Max.   :1.00e+00   Max.   :0      Max.   :0        Max.   :0       Max.   :0      Max.   :0        Max.   :0       Max.   :0     
+                                                                                                                                                                    
+ # CH_RE_I_FOND_U6M CH_RE_DEF_F_U6M CH_RE_CANT_GS       CH_RE_GIRO_GS CH_RE_I_FOND_GS CH_RE_DEF_F_GS CH_RE_CANT_OT_MON  CH_RE_DEF_F_OT_MON CH_RE_GIRO_OT_MON
+ # Min.   :0        Min.   :0       Min.   :0.0000000   Min.   :0     Min.   :0       Min.   :0      Min.   :0.00e+00   Min.   :0          Min.   :0        
+ # 1st Qu.:0        1st Qu.:0       1st Qu.:0.0000000   1st Qu.:0     1st Qu.:0       1st Qu.:0      1st Qu.:0.00e+00   1st Qu.:0          1st Qu.:0        
+ # Median :0        Median :0       Median :0.0000000   Median :0     Median :0       Median :0      Median :0.00e+00   Median :0          Median :0        
+ # Mean   :0        Mean   :0       Mean   :0.0001001   Mean   :0     Mean   :0       Mean   :0      Mean   :4.29e-05   Mean   :0          Mean   :0        
+ # 3rd Qu.:0        3rd Qu.:0       3rd Qu.:0.0000000   3rd Qu.:0     3rd Qu.:0       3rd Qu.:0      3rd Qu.:0.00e+00   3rd Qu.:0          3rd Qu.:0        
+ # Max.   :0        Max.   :0       Max.   :1.0000000   Max.   :0     Max.   :0       Max.   :0      Max.   :1.00e+00   Max.   :0          Max.   :0        
+                                                                                                                                                          
+ # CH_RE_I_FOND_OT_MON CH_RE_MONTO_GS     CH_RE_MONTO_GIRO_GS CH_RE_MONTO_I_FOND_GS CH_RE_MONTO_DEF_F_GS CH_RE_MONTO_OT_MON CH_RE_MONTO_GIRO_OT_MON
+ # Min.   :0           Min.   :       0   Min.   :0           Min.   :0             Min.   :0            Min.   :0.00e+00   Min.   :0              
+ # 1st Qu.:0           1st Qu.:       0   1st Qu.:0           1st Qu.:0             1st Qu.:0            1st Qu.:0.00e+00   1st Qu.:0              
+ # Median :0           Median :       0   Median :0           Median :0             Median :0            Median :0.00e+00   Median :0              
+ # Mean   :0           Mean   :     482   Mean   :0           Mean   :0             Mean   :0            Mean   :6.05e-01   Mean   :0              
+ # 3rd Qu.:0           3rd Qu.:       0   3rd Qu.:0           3rd Qu.:0             3rd Qu.:0            3rd Qu.:0.00e+00   3rd Qu.:0              
+ # Max.   :0           Max.   :21040091   Max.   :0           Max.   :0             Max.   :0            Max.   :3.00e+04   Max.   :0              
+                                                                                                                                                 
+ # CH_RE_MONTO_I_FOND_OT_MON CH_RE_MONTO_DEF_F_OT_MON CH_RE_MAX_MONTO_GS CH_RE_MAX_MONTO_GIRO_GS CH_RE_MAX_MONTO_I_FOND_GS CH_RE_MAX_MONTO_DEF_F_GS
+ # Min.   :0                 Min.   :0                Min.   :       0   Min.   :0               Min.   :0                 Min.   :0               
+ # 1st Qu.:0                 1st Qu.:0                1st Qu.:       0   1st Qu.:0               1st Qu.:0                 1st Qu.:0               
+ # Median :0                 Median :0                Median :       0   Median :0               Median :0                 Median :0               
+ # Mean   :0                 Mean   :0                Mean   :     482   Mean   :0               Mean   :0                 Mean   :0               
+ # 3rd Qu.:0                 3rd Qu.:0                3rd Qu.:       0   3rd Qu.:0               3rd Qu.:0                 3rd Qu.:0               
+ # Max.   :0                 Max.   :0                Max.   :21040091   Max.   :0               Max.   :0                 Max.   :0               
+                                                                                                                                                 
+ # CH_RE_MAX_MONTO_OT_MON CH_RE_MAX_MONTO_GIRO_OT_MON CH_RE_MAX_MONTO_I_FOND_OT_MON CH_RE_MAX_MONTO_DEF_F_OT_MON CH_RE_MIN_MONTO_GS CH_RE_MIN_MONTO_GIRO_GS
+ # Min.   :0.00e+00       Min.   :0                   Min.   :0                     Min.   :0                    Min.   :       0   Min.   :0              
+ # 1st Qu.:0.00e+00       1st Qu.:0                   1st Qu.:0                     1st Qu.:0                    1st Qu.:       0   1st Qu.:0              
+ # Median :0.00e+00       Median :0                   Median :0                     Median :0                    Median :       0   Median :0              
+ # Mean   :6.05e-01       Mean   :0                   Mean   :0                     Mean   :0                    Mean   :     482   Mean   :0              
+ # 3rd Qu.:0.00e+00       3rd Qu.:0                   3rd Qu.:0                     3rd Qu.:0                    3rd Qu.:       0   3rd Qu.:0              
+ # Max.   :3.00e+04       Max.   :0                   Max.   :0                     Max.   :0                    Max.   :21040091   Max.   :0              
+                                                                                                                                                         
+ # CH_RE_MIN_MONTO_I_FOND_GS CH_RE_MIN_MONTO_DEF_F_GS CH_RE_MIN_MONTO_OT_MON CH_RE_MIN_MONTO_GIRO_OT_MON CH_RE_MIN_MONTO_I_FOND_OT_MON CH_RE_MIN_MONTO_DEF_F_OT_MON
+ # Min.   :0                 Min.   :0                Min.   :0.00e+00       Min.   :0                   Min.   :0                     Min.   :0                   
+ # 1st Qu.:0                 1st Qu.:0                1st Qu.:0.00e+00       1st Qu.:0                   1st Qu.:0                     1st Qu.:0                   
+ # Median :0                 Median :0                Median :0.00e+00       Median :0                   Median :0                     Median :0                   
+ # Mean   :0                 Mean   :0                Mean   :6.05e-01       Mean   :0                   Mean   :0                     Mean   :0                   
+ # 3rd Qu.:0                 3rd Qu.:0                3rd Qu.:0.00e+00       3rd Qu.:0                   3rd Qu.:0                     3rd Qu.:0                   
+ # Max.   :0                 Max.   :0                Max.   :3.00e+04       Max.   :0                   Max.   :0                     Max.   :0                   
+                                                                                                                                                                 
+ # CH_RE_AVG_MONTO_GS CH_RE_AVG_MONTO_GIRO_GS CH_RE_AVG_MONTO_I_FOND_GS CH_RE_AVG_MONTO_DEF_F_GS CH_RE_AVG_MONTO_OT_MON CH_RE_AVG_MONTO_GIRO_OT_MON
+ # Min.   :       0   Min.   :0               Min.   :0                 Min.   :0                Min.   :0.00e+00       Min.   :0                  
+ # 1st Qu.:       0   1st Qu.:0               1st Qu.:0                 1st Qu.:0                1st Qu.:0.00e+00       1st Qu.:0                  
+ # Median :       0   Median :0               Median :0                 Median :0                Median :0.00e+00       Median :0                  
+ # Mean   :     482   Mean   :0               Mean   :0                 Mean   :0                Mean   :6.05e-01       Mean   :0                  
+ # 3rd Qu.:       0   3rd Qu.:0               3rd Qu.:0                 3rd Qu.:0                3rd Qu.:0.00e+00       3rd Qu.:0                  
+ # Max.   :21040091   Max.   :0               Max.   :0                 Max.   :0                Max.   :3.00e+04       Max.   :0                  
+                                                                                                                                                 
+ # CH_RE_AVG_MONTO_I_FOND_OT_MON CH_RE_AVG_MONTO_DEF_F_OT_MON CH_RE_MONTO_TOT_ARB CH_RE_MONTO_GIRO_ARB CH_RE_MONTO_I_FOND_ARB CH_RE_MONTO_DEF_F_ARB
+ # Min.   :0                     Min.   :0                    Min.   :        0   Min.   :0            Min.   :0              Min.   :0            
+ # 1st Qu.:0                     1st Qu.:0                    1st Qu.:        0   1st Qu.:0            1st Qu.:0              1st Qu.:0            
+ # Median :0                     Median :0                    Median :        0   Median :0            Median :0              Median :0            
+ # Mean   :0                     Mean   :0                    Mean   :     3154   Mean   :0            Mean   :0              Mean   :0            
+ # 3rd Qu.:0                     3rd Qu.:0                    3rd Qu.:        0   3rd Qu.:0            3rd Qu.:0              3rd Qu.:0            
+ # Max.   :0                     Max.   :0                    Max.   :132900000   Max.   :0            Max.   :0              Max.   :0            
+                                                                                                                                                 
+ # CH_RE_MAX_MONTO_ARB CH_RE_MAX_MONTO_GIRO_ARB CH_RE_MAX_MONTO_I_FOND_ARB CH_RE_MAX_MONTO_DEF_F_ARB CH_RE_MIN_MONTO_ARB CH_RE_MIN_MONTO_GIRO_ARB
+ # Min.   :        0   Min.   :0                Min.   :0                  Min.   :0                 Min.   :        0   Min.   :0               
+ # 1st Qu.:        0   1st Qu.:0                1st Qu.:0                  1st Qu.:0                 1st Qu.:        0   1st Qu.:0               
+ # Median :        0   Median :0                Median :0                  Median :0                 Median :        0   Median :0               
+ # Mean   :     3154   Mean   :0                Mean   :0                  Mean   :0                 Mean   :     3154   Mean   :0               
+ # 3rd Qu.:        0   3rd Qu.:0                3rd Qu.:0                  3rd Qu.:0                 3rd Qu.:        0   3rd Qu.:0               
+ # Max.   :132900000   Max.   :0                Max.   :0                  Max.   :0                 Max.   :132900000   Max.   :0               
+                                                                                                                                               
+ # CH_RE_MIN_MONTO_I_FOND_ARB CH_RE_MIN_MONTO_DEF_F_ARB CH_RE_AVG_MONTO_TOT_ARB CH_RE_AVG_MONTO_GIRO_ARB CH_RE_AVG_MONTO_I_FOND_ARB CH_RE_AVG_MONTO_DEF_F_ARB
+ # Min.   :0                  Min.   :0                 Min.   :        0       Min.   :0                Min.   :0                  Min.   :0                
+ # 1st Qu.:0                  1st Qu.:0                 1st Qu.:        0       1st Qu.:0                1st Qu.:0                  1st Qu.:0                
+ # Median :0                  Median :0                 Median :        0       Median :0                Median :0                  Median :0                
+ # Mean   :0                  Mean   :0                 Mean   :     3154       Mean   :0                Mean   :0                  Mean   :0                
+ # 3rd Qu.:0                  3rd Qu.:0                 3rd Qu.:        0       3rd Qu.:0                3rd Qu.:0                  3rd Qu.:0                
+ # Max.   :0                  Max.   :0                 Max.   :132900000       Max.   :0                Max.   :0                  Max.   :0                
+                                                                                                                                                           
+ # CH_RE_DIST_BANCO   CH_RE_GIRO_DIST_BANCO CH_RE_I_FON_DIST_BANCO CH_RE_DEF_F_DIST_BANCO CH_RE_MAX_BANCO    CH_RE_MAX_GIRO_BANCO CH_RE_MAX_INSUF_FONDOS_BANCO
+ # Min.   :0.000000   Min.   :0             Min.   :0              Min.   :0              Min.   :0.000000   Min.   :0            Min.   :0                   
+ # 1st Qu.:0.000000   1st Qu.:0             1st Qu.:0              1st Qu.:0              1st Qu.:0.000000   1st Qu.:0            1st Qu.:0                   
+ # Median :0.000000   Median :0             Median :0              Median :0              Median :0.000000   Median :0            Median :0                   
+ # Mean   :0.000143   Mean   :0             Mean   :0              Mean   :0              Mean   :0.000143   Mean   :0            Mean   :0                   
+ # 3rd Qu.:0.000000   3rd Qu.:0             3rd Qu.:0              3rd Qu.:0              3rd Qu.:0.000000   3rd Qu.:0            3rd Qu.:0                   
+ # Max.   :1.000000   Max.   :0             Max.   :0              Max.   :0              Max.   :1.000000   Max.   :0            Max.   :0                   
+                                                                                                                                                            
+ # CH_RE_MAX_DEF_FORMA_BANCO CH_RE_H_PRIM_FECH    CH_RE_H_ULT_FECH     CH_RE_H_CANT_TOTAL CH_RE_H_CANT_GIRO CH_RE_H_CANT_I_FON CH_RE_H_CANT_DEF_F
+ # Min.   :0                 Min.   :2005-11-28   Min.   :2012-10-03   Min.   :0.000000   Min.   :0         Min.   :0          Min.   :0.00e+00  
+ # 1st Qu.:0                 1st Qu.:2011-01-16   1st Qu.:2012-12-11   1st Qu.:0.000000   1st Qu.:0         1st Qu.:0          1st Qu.:0.00e+00  
+ # Median :0                 Median :2012-11-18   Median :2013-01-17   Median :0.000000   Median :0         Median :0          Median :0.00e+00  
+ # Mean   :0                 Mean   :2011-03-21   Mean   :2013-01-04   Mean   :0.000114   Mean   :0         Mean   :0          Mean   :1.43e-05  
+ # 3rd Qu.:0                 3rd Qu.:2013-01-20   3rd Qu.:2013-02-09   3rd Qu.:0.000000   3rd Qu.:0         3rd Qu.:0          3rd Qu.:0.00e+00  
+ # Max.   :0                 Max.   :2013-03-12   Max.   :2013-03-12   Max.   :5.000000   Max.   :0         Max.   :0          Max.   :1.00e+00  
+                           # NA's   :69944        NA's   :69944                                                                                  
+ # CH_RE_H_CANT_NO_IMPUT CH_RE_H_CANT_U24M  CH_RE_H_CANT_U36M CH_RE_H_CANT_U60M CH_RE_H_GIRO_U24M CH_RE_H_I_FON_U24M CH_RE_H_DEF_F_U24M CH_RE_H_GIRO_U36M
+ # Min.   :0e+00         Min.   :0.00e+00   Min.   :0e+00     Min.   :0e+00     Min.   :0         Min.   :0          Min.   :0          Min.   :0        
+ # 1st Qu.:0e+00         1st Qu.:0.00e+00   1st Qu.:0e+00     1st Qu.:0e+00     1st Qu.:0         1st Qu.:0          1st Qu.:0          1st Qu.:0        
+ # Median :0e+00         Median :0.00e+00   Median :0e+00     Median :0e+00     Median :0         Median :0          Median :0          Median :0        
+ # Mean   :1e-04         Mean   :5.72e-05   Mean   :1e-04     Mean   :1e-04     Mean   :0         Mean   :0          Mean   :0          Mean   :0        
+ # 3rd Qu.:0e+00         3rd Qu.:0.00e+00   3rd Qu.:0e+00     3rd Qu.:0e+00     3rd Qu.:0         3rd Qu.:0          3rd Qu.:0          3rd Qu.:0        
+ # Max.   :4e+00         Max.   :1.00e+00   Max.   :4e+00     Max.   :4e+00     Max.   :0         Max.   :0          Max.   :0          Max.   :0        
+                                                                                                                                                       
+ # CH_RE_H_I_FON_U36M CH_RE_H_DEF_F_U36M CH_RE_H_GIRO_U60M CH_RE_H_I_FON_U60M CH_RE_H_DEF_F_U60M CH_RE_H_CANT_GS    CH_RE_H_GIRO_GS CH_RE_H_I_FON_GS
+ # Min.   :0          Min.   :0          Min.   :0         Min.   :0          Min.   :0          Min.   :0.000000   Min.   :0       Min.   :0       
+ # 1st Qu.:0          1st Qu.:0          1st Qu.:0         1st Qu.:0          1st Qu.:0          1st Qu.:0.000000   1st Qu.:0       1st Qu.:0       
+ # Median :0          Median :0          Median :0         Median :0          Median :0          Median :0.000000   Median :0       Median :0       
+ # Mean   :0          Mean   :0          Mean   :0         Mean   :0          Mean   :0          Mean   :0.000114   Mean   :0       Mean   :0       
+ # 3rd Qu.:0          3rd Qu.:0          3rd Qu.:0         3rd Qu.:0          3rd Qu.:0          3rd Qu.:0.000000   3rd Qu.:0       3rd Qu.:0       
+ # Max.   :0          Max.   :0          Max.   :0         Max.   :0          Max.   :0          Max.   :5.000000   Max.   :0       Max.   :0       
+                                                                                                                                                  
+ # CH_RE_H_DEF_F_GS   CH_RE_H_MONTO_GS    CH_RE_H_MONTO_GIRO_GS CH_RE_H_MONTO_I_FON_GS CH_RE_H_MONTO_DEF_F_GS CH_RE_H_MONTO_OT_MON CH_RE_H_MONTO_GIRO_OT_MON
+ # Min.   :0.00e+00   Min.   :        0   Min.   :0             Min.   :0              Min.   :       0       Min.   :0            Min.   :0                
+ # 1st Qu.:0.00e+00   1st Qu.:        0   1st Qu.:0             1st Qu.:0              1st Qu.:       0       1st Qu.:0            1st Qu.:0                
+ # Median :0.00e+00   Median :        0   Median :0             Median :0              Median :       0       Median :0            Median :0                
+ # Mean   :1.43e-05   Mean   :     1932   Mean   :0             Mean   :0              Mean   :     372       Mean   :0            Mean   :0                
+ # 3rd Qu.:0.00e+00   3rd Qu.:        0   3rd Qu.:0             3rd Qu.:0              3rd Qu.:       0       3rd Qu.:0            3rd Qu.:0                
+ # Max.   :1.00e+00   Max.   :133265156   Max.   :0             Max.   :0              Max.   :26000000       Max.   :0            Max.   :0                
+                                                                                                                                                          
+ # CH_RE_H_MONTO_I_FON_OT_MON CH_RE_H_MONTO_DEF_F_OT_MON CH_RE_H_MAX_MONTO_GS CH_RE_H_MAX_MONTO_GIRO_GS CH_RE_H_MAX_MONTO_I_FON_GS CH_RE_H_MAX_MONTO_DEF_F_GS
+ # Min.   :0                  Min.   :0                  Min.   :        0    Min.   :0                 Min.   :0                  Min.   :       0          
+ # 1st Qu.:0                  1st Qu.:0                  1st Qu.:        0    1st Qu.:0                 1st Qu.:0                  1st Qu.:       0          
+ # Median :0                  Median :0                  Median :        0    Median :0                 Median :0                  Median :       0          
+ # Mean   :0                  Mean   :0                  Mean   :     1459    Mean   :0                 Mean   :0                  Mean   :     372          
+ # 3rd Qu.:0                  3rd Qu.:0                  3rd Qu.:        0    3rd Qu.:0                 3rd Qu.:0                  3rd Qu.:       0          
+ # Max.   :0                  Max.   :0                  Max.   :100121508    Max.   :0                 Max.   :0                  Max.   :26000000          
+                                                                                                                                                           
+ # CH_RE_H_MAX_MONTO_OT_MON CH_RE_H_MAX_MONTO_GIRO_OT_MON CH_RE_H_MAX_MONTO_I_FON_OT_MON CH_RE_H_MAX_MONTO_DEF_F_OT_MON CH_RE_H_MIN_MONTO_GS CH_RE_H_MIN_MONTO_GIRO_GS
+ # Min.   :0                Min.   :0                     Min.   :0                      Min.   :0                      Min.   :      0.0    Min.   :0                
+ # 1st Qu.:0                1st Qu.:0                     1st Qu.:0                      1st Qu.:0                      1st Qu.:      0.0    1st Qu.:0                
+ # Median :0                Median :0                     Median :0                      Median :0                      Median :      0.0    Median :0                
+ # Mean   :0                Mean   :0                     Mean   :0                      Mean   :0                      Mean   :     60.4    Mean   :0                
+ # 3rd Qu.:0                3rd Qu.:0                     3rd Qu.:0                      3rd Qu.:0                      3rd Qu.:      0.0    3rd Qu.:0                
+ # Max.   :0                Max.   :0                     Max.   :0                      Max.   :0                      Max.   :2321824.0    Max.   :0                
+                                                                                                                                                                    
+ # CH_RE_H_MIN_MONTO_I_FON_GS CH_RE_H_MIN_MONTO_DEF_F_GS CH_RE_H_MIN_MONTO_OT_MON CH_RE_H_MIN_MONTO_GIRO_OT_MON CH_RE_H_MIN_MONTO_I_FON_OT_MON
+ # Min.   :0                  Min.   :       0           Min.   :0                Min.   :0                     Min.   :0                     
+ # 1st Qu.:0                  1st Qu.:       0           1st Qu.:0                1st Qu.:0                     1st Qu.:0                     
+ # Median :0                  Median :       0           Median :0                Median :0                     Median :0                     
+ # Mean   :0                  Mean   :     372           Mean   :0                Mean   :0                     Mean   :0                     
+ # 3rd Qu.:0                  3rd Qu.:       0           3rd Qu.:0                3rd Qu.:0                     3rd Qu.:0                     
+ # Max.   :0                  Max.   :26000000           Max.   :0                Max.   :0                     Max.   :0                     
+                                                                                                                                            
+ # CH_RE_H_MIN_MONTO_DEF_F_OT_MON CH_RE_H_AVG_MONTO_GS CH_RE_H_AVG_MONTO_GIRO_GS CH_RE_H_AVG_MONTO_I_FON_GS CH_RE_H_AVG_MONTO_DEF_F_GS CH_RE_H_AVG_MONTO_OT_MON
+ # Min.   :0                      Min.   :       0     Min.   :0                 Min.   :0                  Min.   :       0           Min.   :0               
+ # 1st Qu.:0                      1st Qu.:       0     1st Qu.:0                 1st Qu.:0                  1st Qu.:       0           1st Qu.:0               
+ # Median :0                      Median :       0     Median :0                 Median :0                  Median :       0           Median :0               
+ # Mean   :0                      Mean   :     408     Mean   :0                 Mean   :0                  Mean   :     372           Mean   :0               
+ # 3rd Qu.:0                      3rd Qu.:       0     3rd Qu.:0                 3rd Qu.:0                  3rd Qu.:       0           3rd Qu.:0               
+ # Max.   :0                      Max.   :26653031     Max.   :0                 Max.   :0                  Max.   :26000000           Max.   :0               
+                                                                                                                                                             
+ # CH_RE_H_AVG_MONTO_GIRO_OT_MON CH_RE_H_AVG_MONTO_I_FON_OT_MON CH_RE_H_AVG_MONTO_DEF_F_OT_MON CH_RE_H_MONTO_TOT_ARB CH_RE_H_MONTO_GIRO_ARB CH_RE_H_MONTO_I_FON_ARB
+ # Min.   :0                     Min.   :0                      Min.   :0                      Min.   :        0     Min.   :0              Min.   :0              
+ # 1st Qu.:0                     1st Qu.:0                      1st Qu.:0                      1st Qu.:        0     1st Qu.:0              1st Qu.:0              
+ # Median :0                     Median :0                      Median :0                      Median :        0     Median :0              Median :0              
+ # Mean   :0                     Mean   :0                      Mean   :0                      Mean   :     1932     Mean   :0              Mean   :0              
+ # 3rd Qu.:0                     3rd Qu.:0                      3rd Qu.:0                      3rd Qu.:        0     3rd Qu.:0              3rd Qu.:0              
+ # Max.   :0                     Max.   :0                      Max.   :0                      Max.   :133265156     Max.   :0              Max.   :0              
+                                                                                                                                                                 
+ # CH_RE_H_MONTO_DEF_F_ARB CH_RE_H_MAX_MONTO_ARB CH_RE_H_MAX_MONTO_GIRO_ARB CH_RE_H_MAX_MONTO_I_FON_ARB CH_RE_H_MAX_MONTO_DEF_F_ARB CH_RE_H_MIN_MONTO_ARB
+ # Min.   :       0        Min.   :        0     Min.   :0                  Min.   :0                   Min.   :       0            Min.   :0            
+ # 1st Qu.:       0        1st Qu.:        0     1st Qu.:0                  1st Qu.:0                   1st Qu.:       0            1st Qu.:0            
+ # Median :       0        Median :        0     Median :0                  Median :0                   Median :       0            Median :0            
+ # Mean   :     372        Mean   :     1459     Mean   :0                  Mean   :0                   Mean   :     372            Mean   :0            
+ # 3rd Qu.:       0        3rd Qu.:        0     3rd Qu.:0                  3rd Qu.:0                   3rd Qu.:       0            3rd Qu.:0            
+ # Max.   :26000000        Max.   :100121508     Max.   :0                  Max.   :0                   Max.   :26000000            Max.   :0            
+                                                                                                                                                       
+ # CH_RE_H_MIN_MONTO_GIRO_ARB CH_RE_H_MIN_MONTO_I_FON_ARB CH_RE_H_MIN_MONTO_DEF_F_ARB CH_RE_H_AVG_MONTO_TOT_ARB CH_RE_H_AVG_MONTO_GIRO_ARB CH_RE_H_AVG_MONTO_I_FON_ARB
+ # Min.   :0                  Min.   :0                   Min.   :0                   Min.   :       0          Min.   :0                  Min.   :0                  
+ # 1st Qu.:0                  1st Qu.:0                   1st Qu.:0                   1st Qu.:       0          1st Qu.:0                  1st Qu.:0                  
+ # Median :0                  Median :0                   Median :0                   Median :       0          Median :0                  Median :0                  
+ # Mean   :0                  Mean   :0                   Mean   :0                   Mean   :     408          Mean   :0                  Mean   :0                  
+ # 3rd Qu.:0                  3rd Qu.:0                   3rd Qu.:0                   3rd Qu.:       0          3rd Qu.:0                  3rd Qu.:0                  
+ # Max.   :0                  Max.   :0                   Max.   :0                   Max.   :26653031          Max.   :0                  Max.   :0                  
+                                                                                                                                                                    
+ # CH_RE_H_AVG_MONTO_DEF_F_ARB CH_RE_H_DIST_BANCO CH_RE_H_GIRO_DIST_BANCO CH_RE_H_I_FOND_DIST_BANCO CH_RE_H_DEF_F_DIST_BANCO CH_RE_H_MAX_BANCO  CH_RE_H_MAX_GIRO_BANCO
+ # Min.   :      0             Min.   :0.00e+00   Min.   :0               Min.   :0                 Min.   :0.00e+00         Min.   :0.000000   Min.   :0             
+ # 1st Qu.:      0             1st Qu.:0.00e+00   1st Qu.:0               1st Qu.:0                 1st Qu.:0.00e+00         1st Qu.:0.000000   1st Qu.:0             
+ # Median :      0             Median :0.00e+00   Median :0               Median :0                 Median :0.00e+00         Median :0.000000   Median :0             
+ # Mean   :     74             Mean   :7.15e-05   Mean   :0               Mean   :0                 Mean   :1.43e-05         Mean   :0.000114   Mean   :0             
+ # 3rd Qu.:      0             3rd Qu.:0.00e+00   3rd Qu.:0               3rd Qu.:0                 3rd Qu.:0.00e+00         3rd Qu.:0.000000   3rd Qu.:0             
+ # Max.   :5200000             Max.   :2.00e+00   Max.   :0               Max.   :0                 Max.   :1.00e+00         Max.   :5.000000   Max.   :0             
+                                                                                                                                                                    
+ # CH_RE_H_MAX_I_FOND_BANCO CH_RE_H_MAX_DEF_FORMA_BANCO CH_ANU_DIST_BANCO   CH_EXT_DIST_BANCO   CH_SUS_DIST_BANCO   CH_C_EMB_DIST_BANCO CH_ANU_MAX_BANCO 
+ # Min.   :0                Min.   :0.00e+00            Min.   :0.0000000   Min.   :0.0000000   Min.   :0.0000000   Min.   :0           Min.   : 0.0000  
+ # 1st Qu.:0                1st Qu.:0.00e+00            1st Qu.:0.0000000   1st Qu.:0.0000000   1st Qu.:0.0000000   1st Qu.:0           1st Qu.: 0.0000  
+ # Median :0                Median :0.00e+00            Median :0.0000000   Median :0.0000000   Median :0.0000000   Median :0           Median : 0.0000  
+ # Mean   :0                Mean   :1.43e-05            Mean   :0.0006862   Mean   :0.0002573   Mean   :0.0001859   Mean   :0           Mean   : 0.0054  
+ # 3rd Qu.:0                3rd Qu.:0.00e+00            3rd Qu.:0.0000000   3rd Qu.:0.0000000   3rd Qu.:0.0000000   3rd Qu.:0           3rd Qu.: 0.0000  
+ # Max.   :0                Max.   :1.00e+00            Max.   :1.0000000   Max.   :1.0000000   Max.   :1.0000000   Max.   :0           Max.   :72.0000  
+                                                                                                                                                       
+ # CH_EXT_MAX_BANCO   CH_SUS_MAX_BANCO   CH_C_EMB_MAX_BANCO CH_ANU_CANT_TOTAL CH_EXT_CANT_TOTAL  CH_SUS_CANT_TOTAL  CH_C_EMB_CANT_TOTAL CH_ANU_CANT_GS   
+ # Min.   : 0.00000   Min.   : 0.00000   Min.   :0          Min.   : 0.0000   Min.   : 0.00000   Min.   : 0.00000   Min.   :0           Min.   : 0.0000  
+ # 1st Qu.: 0.00000   1st Qu.: 0.00000   1st Qu.:0          1st Qu.: 0.0000   1st Qu.: 0.00000   1st Qu.: 0.00000   1st Qu.:0           1st Qu.: 0.0000  
+ # Median : 0.00000   Median : 0.00000   Median :0          Median : 0.0000   Median : 0.00000   Median : 0.00000   Median :0           Median : 0.0000  
+ # Mean   : 0.00234   Mean   : 0.00282   Mean   :0          Mean   : 0.0054   Mean   : 0.00234   Mean   : 0.00282   Mean   :0           Mean   : 0.0054  
+ # 3rd Qu.: 0.00000   3rd Qu.: 0.00000   3rd Qu.:0          3rd Qu.: 0.0000   3rd Qu.: 0.00000   3rd Qu.: 0.00000   3rd Qu.:0           3rd Qu.: 0.0000  
+ # Max.   :37.00000   Max.   :48.00000   Max.   :0          Max.   :72.0000   Max.   :37.00000   Max.   :48.00000   Max.   :0           Max.   :72.0000  
+                                                                                                                                                       
+ # CH_EXT_CANT_GS     CH_SUS_CANT_GS     CH_C_EMB_CANT_GS CH_ANU_CANT_OTR_MON CH_EXT_CANT_OTR_MON CH_SUS_CANT_OTR_MON CH_C_EMB_CANT_OTR_MON CH_ANU_CANT_U1M  
+ # Min.   : 0.00000   Min.   : 0.00000   Min.   :0        Min.   :0           Min.   :0           Min.   :0.0e+00     Min.   :0             Min.   :0.0e+00  
+ # 1st Qu.: 0.00000   1st Qu.: 0.00000   1st Qu.:0        1st Qu.:0           1st Qu.:0           1st Qu.:0.0e+00     1st Qu.:0             1st Qu.:0.0e+00  
+ # Median : 0.00000   Median : 0.00000   Median :0        Median :0           Median :0           Median :0.0e+00     Median :0             Median :0.0e+00  
+ # Mean   : 0.00234   Mean   : 0.00107   Mean   :0        Mean   :0           Mean   :0           Mean   :6.9e-04     Mean   :0             Mean   :5.9e-04  
+ # 3rd Qu.: 0.00000   3rd Qu.: 0.00000   3rd Qu.:0        3rd Qu.:0           3rd Qu.:0           3rd Qu.:0.0e+00     3rd Qu.:0             3rd Qu.:0.0e+00  
+ # Max.   :37.00000   Max.   :48.00000   Max.   :0        Max.   :0           Max.   :0           Max.   :4.8e+01     Max.   :0             Max.   :3.5e+01  
+                                                                                                                                                           
+ # CH_EXT_CANT_U1M    CH_SUS_CANT_U1M CH_EXT_CTA_EMB_U1M CH_ANU_CANT_U3M    CH_EXT_CANT_U3M   CH_SUS_CANT_U3M  CH_C_EMB_U3M CH_ANU_CANT_U6M    CH_EXT_CANT_U6M   
+ # Min.   :0.00e+00   Min.   :0       Min.   :0          Min.   : 0.00000   Min.   :0.0e+00   Min.   :0       Min.   :0     Min.   : 0.00000   Min.   :0.00e+00  
+ # 1st Qu.:0.00e+00   1st Qu.:0       1st Qu.:0          1st Qu.: 0.00000   1st Qu.:0.0e+00   1st Qu.:0       1st Qu.:0     1st Qu.: 0.00000   1st Qu.:0.00e+00  
+ # Median :0.00e+00   Median :0       Median :0          Median : 0.00000   Median :0.0e+00   Median :0       Median :0     Median : 0.00000   Median :0.00e+00  
+ # Mean   :1.43e-05   Mean   :0       Mean   :0          Mean   : 0.00122   Mean   :7.1e-05   Mean   :0       Mean   :0     Mean   : 0.00127   Mean   :4.57e-04  
+ # 3rd Qu.:0.00e+00   3rd Qu.:0       3rd Qu.:0          3rd Qu.: 0.00000   3rd Qu.:0.0e+00   3rd Qu.:0       3rd Qu.:0     3rd Qu.: 0.00000   3rd Qu.:0.00e+00  
+ # Max.   :1.00e+00   Max.   :0       Max.   :0          Max.   :35.00000   Max.   :5.0e+00   Max.   :0       Max.   :0     Max.   :35.00000   Max.   :1.60e+01  
+                                                                                                                                                               
+ # CH_SUS_CANT_U6M  CH_C_EMB_U6M CH_ANU_CANT_U12M   CH_EXT_CANT_U12M   CH_SUS_CANT_U12M CH_C_EMB_U12M CH_ANU_CANT_U24M   CH_EXT_CANT_U24M   CH_SUS_CANT_U24M 
+ # Min.   :0       Min.   :0     Min.   : 0.00000   Min.   :0.00e+00   Min.   :0        Min.   :0     Min.   : 0.00000   Min.   :0.00e+00   Min.   :0.0e+00  
+ # 1st Qu.:0       1st Qu.:0     1st Qu.: 0.00000   1st Qu.:0.00e+00   1st Qu.:0        1st Qu.:0     1st Qu.: 0.00000   1st Qu.:0.00e+00   1st Qu.:0.0e+00  
+ # Median :0       Median :0     Median : 0.00000   Median :0.00e+00   Median :0        Median :0     Median : 0.00000   Median :0.00e+00   Median :0.0e+00  
+ # Mean   :0       Mean   :0     Mean   : 0.00172   Mean   :7.86e-04   Mean   :0        Mean   :0     Mean   : 0.00339   Mean   :8.72e-04   Mean   :8.6e-04  
+ # 3rd Qu.:0       3rd Qu.:0     3rd Qu.: 0.00000   3rd Qu.:0.00e+00   3rd Qu.:0        3rd Qu.:0     3rd Qu.: 0.00000   3rd Qu.:0.00e+00   3rd Qu.:0.0e+00  
+ # Max.   :0       Max.   :0     Max.   :35.00000   Max.   :2.20e+01   Max.   :0        Max.   :0     Max.   :72.00000   Max.   :2.20e+01   Max.   :4.8e+01  
+                                                                                                                                                           
+ # CH_C_EMB_U24M CH_ANU_CANT_U36M   CH_EXT_CANT_U36M   CH_SUS_CANT_U36M   CH_EXT_CTA_EMB_U36M CONS_PRIV_CANT_TOTAL FECHA_PRI_PRIV_      FECHA_PRI_CONS_PRIV_BANCO
+ # Min.   :0     Min.   : 0.00000   Min.   : 0.00000   Min.   : 0.00000   Min.   :0           Min.   : 0.000       Min.   :2007-01-29   Min.   :2007-01-29       
+ # 1st Qu.:0     1st Qu.: 0.00000   1st Qu.: 0.00000   1st Qu.: 0.00000   1st Qu.:0           1st Qu.: 0.000       1st Qu.:2009-09-14   1st Qu.:2009-09-11       
+ # Median :0     Median : 0.00000   Median : 0.00000   Median : 0.00000   Median :0           Median : 1.000       Median :2009-11-23   Median :2009-11-23       
+ # Mean   :0     Mean   : 0.00515   Mean   : 0.00187   Mean   : 0.00106   Mean   :0           Mean   : 1.112       Mean   :2010-05-12   Mean   :2010-05-08       
+ # 3rd Qu.:0     3rd Qu.: 0.00000   3rd Qu.: 0.00000   3rd Qu.: 0.00000   3rd Qu.:0           3rd Qu.: 1.000       3rd Qu.:2010-07-26   3rd Qu.:2010-07-19       
+ # Max.   :0     Max.   :72.00000   Max.   :37.00000   Max.   :48.00000   Max.   :0           Max.   :50.000       Max.   :2014-10-21   Max.   :2014-10-21       
+                                                                                                                 # NA's   :28660        NA's   :29831            
+ # FECHA_PRI_CONS_PRIV_FINAN FECHA_ULT_CONS_PRIV  FECHA_ULT_CONS_PRIV_BANCO FECHA_ULT_CONS_PRIV_FINAN CONS_PRIV_CANT_BANCO CONS_PRIV_CANT_FINAN CONS_PRIV_ADMIN  
+ # Min.   :2007-07-19        Min.   :2007-01-30   Min.   :2007-01-30        Min.   :2007-09-10        Min.   : 0.000       Min.   : 0.00000     Min.   : 0.0000  
+ # 1st Qu.:2010-02-06        1st Qu.:2009-11-22   1st Qu.:2009-11-22        1st Qu.:2010-06-09        1st Qu.: 0.000       1st Qu.: 0.00000     1st Qu.: 0.0000  
+ # Median :2010-08-31        Median :2010-07-09   Median :2010-06-10        Median :2010-11-15        Median : 1.000       Median : 0.00000     Median : 0.0000  
+ # Mean   :2011-03-27        Mean   :2011-02-21   Mean   :2011-01-27        Mean   :2011-09-02        Mean   : 1.043       Mean   : 0.06688     Mean   : 0.4324  
+ # 3rd Qu.:2013-02-14        3rd Qu.:2013-03-19   3rd Qu.:2013-02-18        3rd Qu.:2013-05-29        3rd Qu.: 1.000       3rd Qu.: 0.00000     3rd Qu.: 1.0000  
+ # Max.   :2014-10-07        Max.   :2014-10-24   Max.   :2014-10-24        Max.   :2014-10-16        Max.   :44.000       Max.   :10.00000     Max.   :27.0000  
+ # NA's   :66798             NA's   :28660        NA's   :29831             NA's   :66798                                                                        
+ # CONS_PRIV_CCTE_COM  CONS_PRIV_SG     CONS_PRIV_CRED_COM CONS_PRIV_DTO_CH_DOC CONS_PRIV_CRED_IMP_CTA_EXP CONS_PRIV_PR_PER  CONS_PRIV_TARJ CONS_PRIV_OTROS  
+ # Min.   : 0.0000    Min.   :0.00000   Min.   :0.00000    Min.   : 0.00000     Min.   :0.0000000          Min.   :0.00000   Min.   :0.00   Min.   :0.00000  
+ # 1st Qu.: 0.0000    1st Qu.:0.00000   1st Qu.:0.00000    1st Qu.: 0.00000     1st Qu.:0.0000000          1st Qu.:0.00000   1st Qu.:0.00   1st Qu.:0.00000  
+ # Median : 0.0000    Median :0.00000   Median :0.00000    Median : 0.00000     Median :0.0000000          Median :0.00000   Median :0.00   Median :0.00000  
+ # Mean   : 0.2879    Mean   :0.00915   Mean   :0.04742    Mean   : 0.03497     Mean   :0.0001287          Mean   :0.05789   Mean   :0.23   Mean   :0.01513  
+ # 3rd Qu.: 0.0000    3rd Qu.:0.00000   3rd Qu.:0.00000    3rd Qu.: 0.00000     3rd Qu.:0.0000000          3rd Qu.:0.00000   3rd Qu.:0.00   3rd Qu.:0.00000  
+ # Max.   :12.0000    Max.   :3.00000   Max.   :8.00000    Max.   :13.00000     Max.   :1.0000000          Max.   :7.00000   Max.   :5.00   Max.   :3.00000  
+                                                                                                                                                           
+ # CONS_PRIV_BANCO_ADMIN CONS_PRIV_BANCO_CCTE_COM CONS_PRIV_BANCO_SG CONS_PRIV_BANCO_CRED_COM CONS_PRIV_BANCO_DTO_CH_DOC CONS_PRIV_BANCO_CRED_I_C_E
+ # Min.   : 0.0000       Min.   : 0.0000          Min.   :0.000000   Min.   :0.00000          Min.   : 0.00000           Min.   :0.0000000         
+ # 1st Qu.: 0.0000       1st Qu.: 0.0000          1st Qu.:0.000000   1st Qu.:0.00000          1st Qu.: 0.00000           1st Qu.:0.0000000         
+ # Median : 0.0000       Median : 0.0000          Median :0.000000   Median :0.00000          Median : 0.00000           Median :0.0000000         
+ # Mean   : 0.4076       Mean   : 0.2871          Mean   :0.009135   Mean   :0.02333          Mean   : 0.02904           Mean   :0.0001287         
+ # 3rd Qu.: 1.0000       3rd Qu.: 0.0000          3rd Qu.:0.000000   3rd Qu.:0.00000          3rd Qu.: 0.00000           3rd Qu.:0.0000000         
+ # Max.   :21.0000       Max.   :12.0000          Max.   :3.000000   Max.   :6.00000          Max.   :12.00000           Max.   :1.0000000         
+                                                                                                                                                 
+ # CONS_PRIV_BANCO_PR_PER CONS_PRIV_BANCO_TARJ CONS_PRIV_BANCO_OTROS CONS_PRIV_FINAN_ADMIN CONS_PRIV_FINAN_CCTE_COM CONS_PRIV_FINAN_SG CONS_PRIV_FINAN_CRED_COM
+ # Min.   :0.00000        Min.   :0.0000       Min.   :0.00000       Min.   :0.00000       Min.   :0.000000         Min.   :0.00e+00   Min.   :0.00000         
+ # 1st Qu.:0.00000        1st Qu.:0.0000       1st Qu.:0.00000       1st Qu.:0.00000       1st Qu.:0.000000         1st Qu.:0.00e+00   1st Qu.:0.00000         
+ # Median :0.00000        Median :0.0000       Median :0.00000       Median :0.00000       Median :0.000000         Median :0.00e+00   Median :0.00000         
+ # Mean   :0.05192        Mean   :0.2298       Mean   :0.01368       Mean   :0.02476       Mean   :0.000843         Mean   :1.43e-05   Mean   :0.02409         
+ # 3rd Qu.:0.00000        3rd Qu.:0.0000       3rd Qu.:0.00000       3rd Qu.:0.00000       3rd Qu.:0.000000         3rd Qu.:0.00e+00   3rd Qu.:0.00000         
+ # Max.   :7.00000        Max.   :5.0000       Max.   :3.00000       Max.   :9.00000       Max.   :4.000000         Max.   :1.00e+00   Max.   :6.00000         
+                                                                                                                                                             
+ # CONS_PRIV_FINAN_DTO_CH_DOC CONS_PRIV_FINAN_CRED_I_C_E CONS_PRIV_FINAN_PR_PER CONS_PRIV_FINAN_TARJ CONS_PRIV_FINAN_OTROS CONS_PRIV_CANT_DIST_ENT
+ # Min.   : 0.000000          Min.   :0                  Min.   :0.000000       Min.   :0.0000000    Min.   :0.00000       Min.   : 0.0000        
+ # 1st Qu.: 0.000000          1st Qu.:0                  1st Qu.:0.000000       1st Qu.:0.0000000    1st Qu.:0.00000       1st Qu.: 0.0000        
+ # Median : 0.000000          Median :0                  Median :0.000000       Median :0.0000000    Median :0.00000       Median : 1.0000        
+ # Mean   : 0.005933          Mean   :0                  Mean   :0.005947       Mean   :0.0002144    Mean   :0.00143       Mean   : 0.7853        
+ # 3rd Qu.: 0.000000          3rd Qu.:0                  3rd Qu.:0.000000       3rd Qu.:0.0000000    3rd Qu.:0.00000       3rd Qu.: 1.0000        
+ # Max.   :10.000000          Max.   :0                  Max.   :3.000000       Max.   :1.0000000    Max.   :3.00000       Max.   :11.0000        
+                                                                                                                                                
+ # CONS_PRIV_DIST_ENT_ADMIN CONS_PRIV_DIST_ENT_CTE_CA_COM CONS_PRIV_DIST_ENT_SG CONS_PRIV_DIST_ENT_CRED_COM CONS_PRIV_DIST_ENT_DTO_CH_DOC
+ # Min.   : 0.0000          Min.   :0.000                 Min.   :0.000000      Min.   :0.00000             Min.   :0.00000              
+ # 1st Qu.: 0.0000          1st Qu.:0.000                 1st Qu.:0.000000      1st Qu.:0.00000             1st Qu.:0.00000              
+ # Median : 0.0000          Median :0.000                 Median :0.000000      Median :0.00000             Median :0.00000              
+ # Mean   : 0.3318          Mean   :0.182                 Mean   :0.008649      Mean   :0.03554             Mean   :0.02678              
+ # 3rd Qu.: 1.0000          3rd Qu.:0.000                 3rd Qu.:0.000000      3rd Qu.:0.00000             3rd Qu.:0.00000              
+ # Max.   :10.0000          Max.   :4.000                 Max.   :1.000000      Max.   :4.00000             Max.   :6.00000              
+                                                                                                                                       
+ # CONS_PRIV_DIST_ENT_CRED_I_C_E CONS_PRIV_DIST_ENT_PR_PER CONS_PRIV_DIST_ENT_TARJ CONS_PRIV_DIST_ENT_OTROS CONS_PRIV_MAX_ENT CONS_PRIV_MAX_ENT_ADMIN
+ # Min.   :0.0000000             Min.   :0.00000           Min.   :0.0000          Min.   :0.000000         Min.   : 0.0000   Min.   : 0.0000        
+ # 1st Qu.:0.0000000             1st Qu.:0.00000           1st Qu.:0.0000          1st Qu.:0.000000         1st Qu.: 0.0000   1st Qu.: 0.0000        
+ # Median :0.0000000             Median :0.00000           Median :0.0000          Median :0.000000         Median : 1.0000   Median : 0.0000        
+ # Mean   :0.0001287             Mean   :0.04991           Mean   :0.2187          Mean   :0.005547         Mean   : 0.8919   Mean   : 0.3635        
+ # 3rd Qu.:0.0000000             3rd Qu.:0.00000           3rd Qu.:0.0000          3rd Qu.:0.000000         3rd Qu.: 1.0000   3rd Qu.: 1.0000        
+ # Max.   :1.0000000             Max.   :3.00000           Max.   :3.0000          Max.   :2.000000         Max.   :17.0000   Max.   :11.0000        
+                                                                                                                                                   
+ # CONS_PRIV_MAX_ENT_CTE_CA_COM CONS_PRIV_MAX_ENT_SG CONS_PRIV_MAX_ENT_CRED_COM CONS_PRIV_MAX_ENT_DTO_CH_DOC CONS_PRIV_MAX_ENT_CRED_I_C_E CONS_PRIV_MAX_ENT_PR_PER
+ # Min.   : 0.0000              Min.   :0.00000      Min.   :0.00000            Min.   : 0.00000             Min.   :0.0000000            Min.   :0.00000         
+ # 1st Qu.: 0.0000              1st Qu.:0.00000      1st Qu.:0.00000            1st Qu.: 0.00000             1st Qu.:0.0000000            1st Qu.:0.00000         
+ # Median : 0.0000              Median :0.00000      Median :0.00000            Median : 0.00000             Median :0.0000000            Median :0.00000         
+ # Mean   : 0.2783              Mean   :0.00915      Mean   :0.04469            Mean   : 0.03115             Mean   :0.0001287            Mean   :0.05647         
+ # 3rd Qu.: 0.0000              3rd Qu.:0.00000      3rd Qu.:0.00000            3rd Qu.: 0.00000             3rd Qu.:0.0000000            3rd Qu.:0.00000         
+ # Max.   :12.0000              Max.   :3.00000      Max.   :6.00000            Max.   :10.00000             Max.   :1.0000000            Max.   :7.00000         
+                                                                                                                                                                
+ # CONS_PRIV_MAX_ENT_TARJ CONS_PRIV_MAX_ENT_OTROS CH_RE_TEXT_ENM_U6M CH_RE_SIN_FIRM_U6M CH_RE_FECH_ENM_U6M CH_RE_SIN_1_FIRM_U6M CH_RE_SIN_FIRM_SAL_U6M
+ # Min.   :0.0000         Min.   :0.00000         Min.   :0          Min.   :0          Min.   :0          Min.   :0            Min.   :0             
+ # 1st Qu.:0.0000         1st Qu.:0.00000         1st Qu.:0          1st Qu.:0          1st Qu.:0          1st Qu.:0            1st Qu.:0             
+ # Median :0.0000         Median :0.00000         Median :0          Median :0          Median :0          Median :0            Median :0             
+ # Mean   :0.2271         Mean   :0.00589         Mean   :0          Mean   :0          Mean   :0          Mean   :0            Mean   :0             
+ # 3rd Qu.:0.0000         3rd Qu.:0.00000         3rd Qu.:0          3rd Qu.:0          3rd Qu.:0          3rd Qu.:0            3rd Qu.:0             
+ # Max.   :5.0000         Max.   :3.00000         Max.   :0          Max.   :0          Max.   :0          Max.   :0            Max.   :0             
+                                                                                                                                                    
+ # CH_RE_CIF_ENM_U6M CH_RE_TEXT_DEF_U6M CH_RE_FIRM_DEF_U6M CH_RE_FECH_VENC_U6M CH_RE_FIRM_INH_U6M CH_RE_END_DEF_U6M CH_RE_CTA_BLOQ_U6M CH_RE_NO_VAL_U6M
+ # Min.   :0         Min.   :0          Min.   :0          Min.   :0.00e+00    Min.   :0          Min.   :0         Min.   :0          Min.   :0       
+ # 1st Qu.:0         1st Qu.:0          1st Qu.:0          1st Qu.:0.00e+00    1st Qu.:0          1st Qu.:0         1st Qu.:0          1st Qu.:0       
+ # Median :0         Median :0          Median :0          Median :0.00e+00    Median :0          Median :0         Median :0          Median :0       
+ # Mean   :0         Mean   :0          Mean   :0          Mean   :8.58e-05    Mean   :0          Mean   :0         Mean   :0          Mean   :0       
+ # 3rd Qu.:0         3rd Qu.:0          3rd Qu.:0          3rd Qu.:0.00e+00    3rd Qu.:0          3rd Qu.:0         3rd Qu.:0          3rd Qu.:0       
+ # Max.   :0         Max.   :0          Max.   :0          Max.   :1.00e+00    Max.   :0          Max.   :0         Max.   :0          Max.   :0       
+                                                                                                                                                     
+ # CH_RE_PREST_EXT_U6M CH_RE_ORD_NO_PA_U6M CH_RE_INH_OPER_U6M CH_RE_TEXT_INC_U6M CH_RE_FECH_DEF_U6M
+ # Min.   :0           Min.   :0           Min.   :0          Min.   :0          Min.   :0         
+ # 1st Qu.:0           1st Qu.:0           1st Qu.:0          1st Qu.:0          1st Qu.:0         
+ # Median :0           Median :0           Median :0          Median :0          Median :0         
+ # Mean   :0           Mean   :0           Mean   :0          Mean   :0          Mean   :0         
+ # 3rd Qu.:0           3rd Qu.:0           3rd Qu.:0          3rd Qu.:0          3rd Qu.:0         
+ # Max.   :0           Max.   :0           Max.   :0          Max.   :0          Max.   :0  
+
+
+
+datos <- datos[-(which(datos$TARGET==0 & datos$edad<25)),]   #TomÃ³ la edad de infocheck como correcta al momento de las extraccion
+datos <- datos[-(which(is.na(datos$edad)==TRUE & datos$TARGET==0)),]       
+datos <- datos[-(which(is.na(datos$CH_RE_PRIM_FECH)==FALSE & datos$TARGET==0)),]
+datos <- datos[-(which(is.na(datos$CH_RE_H_PRIM_FECH)==FALSE & datos$TARGET==0)),]
+table(datos$TARGET)
+    # 0      1 
+  # 69929  49827 (69929 - 49827 = 20102)
+
+r<-abs(table(datos$TARGET)[2]-table(datos$TARGET)[1])
+x<-datos$inf_id[datos$TARGET==0]
+y<-rep(0,r)
+set.seed(1)
+y<-sample(x,r,replace=F)
+datos<-datos[!(datos$inf_id %in% y),]
+table(datos$TARGET)
+    # 0     1 
+  # 49827 49827 
+
+save.image(DIR1)
