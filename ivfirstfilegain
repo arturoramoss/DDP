@@ -1,0 +1,83 @@
+################################################################################################################################################
+# iv_gain computa la correlación de las variables independientes con la variable dependiente en forma univariante
+# capacidad explicativa: iv<0.02 = nula, iv entre 0.02 y 0.1 = baja, iv entre 0.1 y 0.3 = media, iv>0.3 = alta
+# gain = indicador entre 0 y 100. Valor 100 = perfecta correlación, 0 = nula correlación
+# se generan tres variables aleatorias uniformes (rand.1,rand.2,rand.3) como testigos para filtrar variables
+# ejemplo: 
+# r1 <- runif(100); y <- ifelse(r1<=0.5,1,0); datos <- data.frame(rnorm(1000),rchisq(1000,2),runif(1000),r1,y); iv_gain(datos,pos=5,exclude=1)
+################################################################################################################################################
+
+iv_gain <- function(data,pos=NULL,g=10,exclude=NULL){
+library(Hmisc); if(is.null(pos)) stop("Identificar posición de variable dependiente",call.=F)
+
+rand.1 <- runif(dim(data)[1]); rand.2 <- runif(dim(data)[1]); rand.3 <- runif(dim(data)[1])
+    
+if(is.null(exclude)){ data.ini <- cbind(rand.1,rand.2,rand.3,data[,-pos],data[,pos]); rm(rand.1,rand.2,rand.3) }
+else { data.ini <- cbind(rand.1,rand.2,rand.3,data[,-c(exclude,pos)],data[,pos]); rm(rand.1,rand.2,rand.3) }
+
+datos.num <- NULL
+for(i in 1:dim(data.ini)[2]) { if(is.numeric(data.ini[,i]) | is.integer(data.ini[,i])) datos.num[i] <- min(data.ini[,i],na.rm=T)!=max(data.ini[,i],na.rm=T); NULL }
+
+datos.num[is.na(datos.num)] <- TRUE; data.ini <- data.ini[,datos.num]
+
+pos <- dim(data.ini)[2]; tipo.pos <- length(unique(data.ini[,pos])) 
+Entrop.Y <- -sum(prop.table(table(data.ini[,pos]))*log(prop.table(table(data.ini[,pos])),2))
+
+if(tipo.pos==2)
+{
+ mat.indic <- matrix(9999,nrow=(dim(data.ini)[2]-1),ncol=2); colnames(mat.indic) <- c("IV","Gain(%)")
+ for(i in 1:(dim(data.ini)[2]-1))
+ {
+  if(is.numeric(data.ini[,i]))
+  {
+    cortes <- addNA(cut2(data.ini[,i],g=g),ifany=T)
+    tab.base <- table(cortes,data.ini[,pos])
+    iv.tab <- prop.table(tab.base+0.001,2)
+    woe <- log(iv.tab[,1]/iv.tab[,2])
+    IV <- sum((iv.tab[,1]-iv.tab[,2])*log(iv.tab[,1]/iv.tab[,2]))
+    EYX <- -sum(margin.table(prop.table(tab.base+0.001,1)*log(prop.table(tab.base+0.001,1),2),1)*prop.table(table(cortes)))/Entrop.Y
+    Gain <- (1-EYX)*100
+    mat.indic[i,1] <- IV
+    mat.indic[i,2] <- Gain
+  }
+  if(is.factor(data.ini[,i]))
+  {
+    corte.f <- addNA(data.ini[,i],ifany=T)
+    tab.base <- table(corte.f,data.ini[,pos])
+    iv.tab <- prop.table(tab.base+0.001,2)
+    woe <- log(iv.tab[,1]/iv.tab[,2])
+    IV <- sum((iv.tab[,1]- iv.tab[,2])*log(iv.tab[,1]/iv.tab[,2]))
+    EYX <- -sum(margin.table(prop.table(tab.base+0.001,1)*log(prop.table(tab.base+0.001,1),2),1)*prop.table(table(corte.f)))/Entrop.Y
+	EYX
+    Gain <- (1-EYX)*100
+    mat.indic[i,1] <- IV
+    mat.indic[i,2] <- Gain    
+  }
+ }
+}
+
+else 
+{
+mat.indic <- matrix(9999,nrow=(dim(data.ini)[2]-1),ncol=1); colnames(mat.indic) <- c("Gain(%)")
+  for(i in 1:(dim(data.ini)[2]-1))
+  {
+    if(is.numeric(data.ini[,i]))
+    {
+      cortes <- addNA(cut2(data.ini[,i],g=g),ifany=T)
+      tab.base <- table(cortes,data.ini[,pos])
+      EYX <- -sum(margin.table(prop.table(tab.base+0.001,1)*log(prop.table(tab.base+0.001,1),2),1)*prop.table(table(cortes)))/Entrop.Y
+      Gain <- (1-EYX)*100
+      mat.indic[i,1] <- Gain
+    }
+    if(is.factor(data.ini[,i]))
+    {
+      corte.f <- addNA(data.ini[,i],ifany=T)
+      tab.base <- table(corte.f,data.ini[,pos])
+      EYX <- -sum(margin.table(prop.table(tab.base+0.001,1)*log(prop.table(tab.base+0.001,1),2),1)*prop.table(table(corte.f)))/Entrop.Y
+      Gain <- (1-EYX)*100
+      mat.indic[i,1] <- Gain
+    }
+  }
+}
+rownames(mat.indic) <- names(data.ini[,-pos]); mat.indic <- round(mat.indic,2); mat.indic[order(-mat.indic[,1]),]
+}
