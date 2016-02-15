@@ -1,0 +1,181 @@
+
+# directorio de trabajo
+rm(list=ls())
+DIR<-"C:/Users/and2/Desktop/MedallaMuestra201501_00"
+DIR1<-"C:/Users/and2/Desktop/MedallaMuestra201501_00/Analisis_Bivariado_Tarjetas.RData"
+
+setwd(DIR)
+Tarjeta<-read.csv(file="medalla_datos2.csv", header=TRUE , sep=",", dec=".", fill=TRUE)
+dim(Tarjeta) #22952    213
+names(Tarjeta)
+
+############################################
+############################################
+
+
+##Saco variables que no los voy a usar
+Tarjeta$inf_id<-NULL
+Tarjeta$inf_ficha<-NULL
+Tarjeta$inf_documento<-NULL
+Tarjeta$inf_fecha_nac<-NULL
+Tarjeta$inf_es_soc_accion_gran_cont<-NULL
+Tarjeta$inf_es_soc_accion_no_gran_cont<-NULL
+Tarjeta$inf_dem_cant_u01mes	<-NULL
+Tarjeta$inf_dem_cant_u02mes	<-NULL
+Tarjeta$inf_dem_cant_u03mes	<-NULL
+Tarjeta$inf_dem_cant_u04mes	<-NULL
+Tarjeta$inf_dem_cant_u05mes	<-NULL
+Tarjeta$inf_dem_cant_u06mes	<-NULL
+Tarjeta$inf_dem_cant_u09mes	<-NULL
+Tarjeta$inf_dem_cant_u12mes	<-NULL
+Tarjeta$inf_dem_cant_u18mes	<-NULL
+Tarjeta$inf_dem_cant_u24mes	<-NULL
+Tarjeta$inf_dem_cant_u30mes	<-NULL
+Tarjeta$inf_dem_cant_u36mes	<-NULL
+Tarjeta$inf_dem_cant_u48mes	<-NULL
+Tarjeta$inf_conv_cant_u1m	<-NULL
+Tarjeta$inf_conv_cant_u3m	<-NULL
+Tarjeta$inf_conv_cant_u6m	<-NULL
+Tarjeta$inf_conv_cant_u12m	<-NULL
+Tarjeta$inf_conv_cant_u24m	<-NULL
+Tarjeta$inf_inhib_cant_u1m	<-NULL
+Tarjeta$inf_inhib_cant_u3m	<-NULL
+Tarjeta$inf_inhib_cant_u6m	<-NULL
+Tarjeta$inf_inhib_cant_u12m	<-NULL
+Tarjeta$inf_inhib_cant_u24m	<-NULL
+Tarjeta$inf_qui_cant_u1m	<-NULL
+Tarjeta$inf_qui_cant_u3m	<-NULL
+Tarjeta$inf_qui_cant_u6m	<-NULL
+Tarjeta$inf_qui_cant_u12m	<-NULL
+Tarjeta$inf_qui_cant_u24m	<-NULL
+Tarjeta$inf_rem_cant_u1m	<-NULL
+Tarjeta$inf_rem_cant_u3m	<-NULL
+Tarjeta$inf_rem_cant_u6m	<-NULL
+Tarjeta$inf_rem_cant_u12m	<-NULL
+Tarjeta$inf_rem_cant_u24m	<-NULL
+Tarjeta$inf_tuvo_antec_no_c30_u1m	<-NULL
+Tarjeta$inf_tuvo_antec_no_c30_u3m	<-NULL
+Tarjeta$inf_tuvo_antec_no_c30_u6m	<-NULL
+Tarjeta$inf_tuvo_antec_no_c30_u12m	<-NULL
+Tarjeta$inf_tuvo_antec_no_c30_u24m	<-NULL
+Tarjeta$inf_dem_camt_finiq_u48mes<-NULL
+Tarjeta$inf_gs_x_dol <-NULL
+
+####### Formatear variables
+
+for(i in 1:dim(Tarjeta)[2]) # para ver quÃ© clase le adjudicÃ³ el r a cada variable
+{a <- c(class(Tarjeta[,i]),names(Tarjeta)[i],i)
+  print.table(a)}
+
+	#fechas
+	fechas<-c(1)
+	for (i in fechas){
+	Tarjeta[,i]<- as.Date(Tarjeta[,i],format="%d/%m/%Y")
+	}	
+	#cuantitativas
+	# cuan<-c(7)
+	# for (i in cuan){
+	# Tarjeta[,i]<- as.integer(as.character(Tarjeta[,i]))
+	# }
+
+#cualitativas
+	cual<-c(4,5,55:89)
+	for (i in cual){
+	Tarjeta[,i]<- as.factor(Tarjeta[,i])
+	}
+
+summary(Tarjeta$inf_fecha_solicitud )
+  # Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
+# "2011-01-03" "2011-11-29" "2012-08-30" "2012-06-27" "2013-02-28" "2013-07-31" 
+
+library(Hmisc)
+source("//clentb.eis.equifax.com/desarrollo modelos/Paraguay/Archivos R scoring/tbl_performance.r") 
+source("//clentb.eis.equifax.com/desarrollo modelos/Paraguay/Archivos R scoring/iv_gain.r") 
+
+
+#variable dependiente!!!! # tuvo_morosidad =1 Malo;  tuvo_morosidad=0 Bueno
+
+table(Tarjeta$tuvo_morosidad)
+   # 0      1 
+ # 22840   472
+
+dim(Tarjeta) #38025 208
+
+
+
+
+
+
+
+#############################
+### expansiÃ³n del dataset ###
+#############################
+for(i in 1:dim(Tarjeta)[2]) # para ver quÃ© clase le adjudicÃ³ el r a cada variable
+{a <- c(class(Tarjeta[,i]),names(Tarjeta)[i],i)
+  print.table(a)}
+
+### capping 
+
+
+vec <- c(6:54,90:133,135:166) 
+  
+for(i in vec) {Tarjeta[,i] <- ifelse(Tarjeta[,i]> 7*sd(Tarjeta[,i],na.rm=T),round(7*sd(Tarjeta[,i],na.rm=T)),Tarjeta[,i])}
+
+# eliminaciÃ³n de atributos constantes 
+
+Tarjeta_num <- NULL
+for(i in 1:dim(Tarjeta)[2]) {if(is.numeric(Tarjeta[,i]) | is.integer(Tarjeta[,i])) Tarjeta_num[i] <- min(Tarjeta[,i],na.rm=T)!=max(Tarjeta[,i],na.rm=T); NULL}
+Tarjeta_num[is.na(Tarjeta_num)] <- TRUE
+
+Tarjeta <- Tarjeta[,Tarjeta_num]
+
+dim(Tarjeta)  #22952   119
+
+#quedan 119 variables
+
+
+
+##################################
+### Modelizacion en desarrollo ###
+##################################
+
+
+##--------------------------Saco muestra de tesing----------------------------------------------------------
+
+### Partir la muestra en dos: Desarrollo y Testing.
+set.seed(dim(Tarjeta)[1])
+Tarjeta$rand <- runif(dim(Tarjeta)[1])    
+    # dim(Tarjeta)[1] es el nÃºmero de observaciones para generar la variable uniforme
+    # if length(n) > 1, the length is taken to be the number required.
+names(Tarjeta)	
+	
+########################
+## AnÃ¡lisis bivariado ##
+########################
+
+# evaluaciÃ³n univariada de poder predictivo de atributos
+
+
+sink("iv_gain_Tarjeta.txt")                                            
+iv_gain(Tarjeta,exclude=c(1,5,120),pos=119)  
+sink()
+var_ratios <- read.table("iv_gain_Tarjeta.txt") 
+var_ratios
+
+
+Tarjeta_bi <- Tarjeta[,c("tuvo_morosidad", "rand",rownames(var_ratios[var_ratios[,1]>0.02,]))]
+dim(Tarjeta_bi)
+
+# Quedaron 72 variables. dim 22952 72
+
+#### tablas bivariadas ###
+
+sink("bivariado_Tarjeta.txt")
+sapply(Tarjeta_bi[Tarjeta_bi$rand<=0.5,], function(x) {
+		if(is.factor(x)) {report_cat(x,Tarjeta_bi$tuvo_morosidad[Tarjeta_bi$rand<=0.5])} else {
+		report_cont(x,Tarjeta_bi$tuvo_morosidad[Tarjeta_bi$rand<=0.5]) }
+		} )
+sink()
+
+
+save.image(DIR1)
