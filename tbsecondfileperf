@@ -1,0 +1,372 @@
+# Ejemplo:
+# library(Hmisc); data <- as.data.frame(cbind(runif(1000),cut2(runif(1000),g=10),ifelse(runif(1000)<0.5,1,0),runif(1000,1,1000)))
+# report_cont(x=data[,1],y=data[,3])
+# report_cont_ran(x=data[,1],y=data[,3])
+# report_cat(x=data[,2],y=data[,3])
+# strategy_tbl(data[,4],data[,3],100)
+# seg_cont(data[,1],data[,3])
+# seg_cat(data[,2],data[,3])
+# seg_cont_ran(data[,1],data[,3])
+
+####################################################################################
+# Genera la tabla de performance segmentando una variable continua en g percentiles
+# x = variable independiente
+# y = variable dependiente
+####################################################################################
+
+
+report_cont <- function(x,y,g=10,score=NULL,plot=F){
+library(Hmisc)
+
+rango <- cut2(x,g=g)
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1]),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+porc_ac_total <- cumsum(porc_total)
+porc_des_total <- cbind(ordena,cumsum(porc_total[order(-porc_ac_total)]))
+porc_des_total <- porc_des_total[order(-porc_des_total[,1]),2]
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+porc_des_buenos <- cbind(ordena,cumsum(porc_buenos[order(-porc_ac_buenos)]))
+porc_des_buenos <- porc_des_buenos[order(-porc_des_buenos[,1]),2]
+
+malos <- tab_base[,2]
+malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+porc_des_malos <- cbind(ordena,cumsum(porc_malos[order(-porc_ac_malos)]))
+porc_des_malos <- porc_des_malos[order(-porc_des_malos[,1]),2]
+prob_malo <- tab_base[,2]/total*100
+tasa_ac_malos <- malos_ac/total_ac*100
+
+woe <- log(porc_buenos/porc_malos)*100
+iv <- (woe/100)*(porc_buenos/100-porc_malos/100)
+ks <- abs(porc_ac_buenos - porc_ac_malos)
+if(is.null(score)) {val_medio <- cbind(c(1:length(unique(rango))),tapply(x,factor(rango,exclude=NULL),mean)); med_score <- mean(x)}  
+else {val_medio <- cbind(c(1:length(unique(rango))),tapply(score,factor(rango,exclude=NULL),mean)); med_score <- mean(score)}
+val_medio <- val_medio[order(-val_medio[,1]),2]
+
+BM_odd <- tab_base[,1]/tab_base[,2]
+
+tab_final <- cbind(val_medio,total,porc_total,porc_ac_total,porc_des_total,buenos,porc_buenos,porc_ac_buenos,porc_des_buenos,malos,porc_malos,porc_ac_malos,porc_des_malos,prob_malo,tasa_ac_malos,BM_odd,woe,iv,ks)
+colnames(tab_final) <- c("Score","Total","%Tot","%AcumTotal","%DesacTotal","Bueno","%Bueno","%AcumBueno","%DesacBueno","Malo","%Malo","%AcumMalo","%DesacMalo","Prob.Malo(%)","ProbAcumMalo(%)","Bueno/Maloodd","WOE","IV","K-S")
+
+total_tab <- cbind(med_score,sum(tab_final[,2]),sum(tab_final[,3]),NA,NA,sum(tab_final[,6]),sum(tab_final[,7]),NA,NA,sum(tab_final[,10]),sum(tab_final[,11]),NA,
+NA,NA,NA,sum(tab_final[,6])/sum(tab_final[,10]),NA,sum(tab_final[,18]),max(tab_final[,19]))
+
+if(plot==T) { plot(tab_final[,1],tab_final[,17],type="b",col="red",lwd=2,xlab="X prom.",ylab="WOE",main="Trend WOE vs. X"); abline(h=0,lty=3) }
+
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final
+}
+
+###################################
+
+report_cont_ran <- function(x,y,bins=seq(min(x),max(x),by=(max(x)-min(x))/10),score=NULL,plot=F){
+library(Hmisc)
+
+rango <- cut2(x,bins)
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1]),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+
+malos <- tab_base[,2]
+malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+prob_malo <- tab_base[,2]/total*100
+tasa_ac_malos <- malos_ac/total_ac*100
+
+woe <- log(porc_buenos/porc_malos)*100
+iv <- (woe/100)*(porc_buenos/100-porc_malos/100)
+ks <- abs(porc_ac_buenos - porc_ac_malos)
+if(is.null(score)) {val_medio <- cbind(c(1:length(unique(rango))),tapply(x,factor(rango,exclude=NULL),mean)); med_score <- mean(x)}  
+else {val_medio <- cbind(c(1:length(unique(rango))),tapply(score,factor(rango,exclude=NULL),mean)); med_score <- mean(score)}
+val_medio <- val_medio[order(-val_medio[,1]),2]
+
+BM_odd <- tab_base[,1]/tab_base[,2]
+
+tab_final <- cbind(val_medio,total,porc_total,buenos,porc_buenos,malos,porc_malos,prob_malo,BM_odd,woe,iv,ks)
+colnames(tab_final) <- c("Score","Total","%Tot","Aus","%Aus","Pres","%Pres","Prob_Pres(%)","AP_odd","WOE","IV","K-S")
+
+total_tab <- cbind(med_score,sum(tab_final[,2]),sum(tab_final[,3]),sum(tab_final[,4]),sum(tab_final[,5]),sum(tab_final[,6]),sum(tab_final[,7]),
+NA,sum(tab_final[,4])/sum(tab_final[,6]),NA,sum(tab_final[,11]),max(tab_final[,12]))
+
+if(plot==T) { plot(tab_final[,1],tab_final[,10],type="b",col="red",lwd=2,xlab="X prom.",ylab="WOE",main="Trend WOE vs. X"); abline(h=0,lty=3) }
+
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final
+}
+
+###################################
+
+report_cat <- function(x,y,score=NULL,plot=F){
+library(Hmisc)
+
+rango <- factor(x,exclude=NULL)
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1], decreasing = TRUE),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+porc_ac_total <- cumsum(porc_total)
+porc_des_total <- cbind(ordena,cumsum(porc_total[order(-porc_ac_total)]))
+porc_des_total <- porc_des_total[order(-porc_des_total[,1]),2]
+
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+porc_des_buenos <- cbind(ordena,cumsum(porc_buenos[order(-porc_ac_buenos)]))
+porc_des_buenos <- porc_des_buenos[order(-porc_des_buenos[,1]),2]
+
+malos <- tab_base[,2]
+malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+porc_des_malos <- cbind(ordena,cumsum(porc_malos[order(-porc_ac_malos)]))
+porc_des_malos <- porc_des_malos[order(-porc_des_malos[,1]),2]
+prob_malo <- tab_base[,2]/total*100
+tasa_ac_malos <- malos_ac/total_ac*100
+
+woe <- log(porc_buenos/porc_malos)*100
+iv <- (woe/100)*(porc_buenos/100-porc_malos/100)
+ks <- abs(porc_ac_buenos - porc_ac_malos)
+BM_odd <- tab_base[,1]/tab_base[,2]
+
+if(!is.null(score))
+{ val_medio <- cbind(c(1:length(unique(rango))),tapply(score,factor(rango,exclude=NULL),mean)); val_medio <- val_medio[order(-val_medio[,1]),2]
+  tab_final <- cbind(val_medio,total,porc_total,porc_ac_total,porc_des_total,buenos,porc_buenos,porc_ac_buenos,porc_des_buenos,malos,porc_malos,porc_ac_malos,porc_des_malos,prob_malo,tasa_ac_malos,BM_odd,woe,iv,ks)
+colnames(tab_final) <- c("Score","Total","%Tot","%AcumTotal","%DesacTotal","Bueno","%Bueno","%AcumBueno","%DesacBueno","Malo","%Malo","%AcumMalo","%DesacMalo","Prob.Malo(%)","ProbAcumMalo(%)","Bueno/Maloodd","WOE","IV","K-S")
+
+total_tab <- cbind(med_score,sum(tab_final[,2]),sum(tab_final[,3]),NA,NA,sum(tab_final[,6]),sum(tab_final[,7]),NA,NA,sum(tab_final[,10]),sum(tab_final[,11]),NA,
+NA,NA,NA,sum(tab_final[,6])/sum(tab_final[,10]),NA,sum(tab_final[,18]),max(tab_final[,19]))
+
+}
+
+else 
+{
+  tab_final <- cbind(total,porc_total,porc_ac_total,porc_des_total,buenos,porc_buenos,porc_ac_buenos,porc_des_buenos,malos,porc_malos,porc_ac_malos,porc_des_malos,prob_malo,tasa_ac_malos,BM_odd,woe,iv,ks)
+colnames(tab_final) <- c("Total","%Tot","%AcumTotal","%DesacTotal","Bueno","%Bueno","%AcumBueno","%DesacBueno","Malo","%Malo","%AcumMalo","%DesacMalo","Prob.Malo(%)","ProbAcumMalo(%)","Bueno/Maloodd","WOE","IV","K-S")
+
+total_tab <- cbind(sum(tab_final[,1]),sum(tab_final[,2]),NA,NA,sum(tab_final[,5]),sum(tab_final[,6]),NA,NA,sum(tab_final[,9]),sum(tab_final[,10]),NA,
+NA,100*(sum(tab_final[,9])/sum(tab_final[,1])),NA,sum(tab_final[,5])/sum(tab_final[,9]),NA,sum(tab_final[,17]),max(tab_final[,18]))
+}
+
+if(plot==T) { plot(tab_final[,1],tab_final[,16],type="b",col="red",lwd=2,xlab="X prom.",ylab="WOE",main="Trend WOE vs. X"); abline(h=0,lty=3) }
+
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final
+}
+
+##################
+
+strategy_tbl <- function(score,y,rangos=50){
+library(Hmisc)
+
+rango <- cut2(score,seq(min(score),max(score),rangos))
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1]),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+porc_ac_total <- cumsum(porc_total)
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+
+malos <- tab_base[,2]
+malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+tasa_ac_malos <- malos_ac/total_ac*100
+
+tab_final <- cbind(total,porc_ac_total,buenos,porc_ac_buenos,malos,porc_ac_malos,tasa_ac_malos)
+colnames(tab_final) <- c("Total","%Ac_Tot","Aus","%Ac_Aus","Pres","%Ac_Pres","Tasa_Pres(%)")
+
+total_tab <- cbind(sum(tab_final[,1]),NA,sum(tab_final[,3]),NA,sum(tab_final[,5]),NA,NA)
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final
+}
+
+####################################################################################
+# Genera la tabla de performance segmentando una variable continua en g percentiles
+# x = variable independiente
+# y = variable dependiente
+####################################################################################
+
+seg_cont <- function(x,y,g=10){
+library(Hmisc)
+
+rango <- cut2(x,g=g)
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1]),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+porc_ac_total <- cumsum(porc_total)
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+porc_des_buenos <- cbind(ordena,cumsum(porc_buenos[order(-porc_ac_buenos)]))
+porc_des_buenos <- porc_des_buenos[order(-porc_des_buenos[,1]),2]
+
+malos <- tab_base[,2]
+malos_ac <- malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+porc_des_malos <- cbind(ordena,cumsum(porc_malos[order(-porc_ac_malos)]))
+porc_des_malos <- porc_des_malos[order(-porc_des_malos[,1]),2]
+prob_malo <- tab_base[,2]/total*100
+tasa_ac_malos <- malos_ac/total_ac*100
+
+lift <- porc_ac_malos/porc_ac_total
+woe <- log(porc_buenos/porc_malos)*100
+ks <- max(abs(porc_ac_buenos - porc_ac_malos))
+iv <- sum((woe/100)*(porc_buenos/100-porc_malos/100))
+
+tab_final <- cbind(total,porc_total,porc_ac_total,buenos,porc_buenos,porc_ac_buenos,porc_des_buenos,
+malos,porc_malos,porc_ac_malos,porc_des_malos,prob_malo,tasa_ac_malos,woe,lift)
+
+colnames(tab_final) <- c("Total","%Tot","%Ac_Tot","Aus","%Aus","%Ac_Aus","%Desac_Aus","Pres","%Pres","%Ac_Pres","%Desac_Pres","Prob_Pres(%)",
+"Tasa_Pres","WOE","Lift")
+
+total_tab <- cbind(sum(tab_final[,1]),sum(tab_final[,2]),NA,sum(tab_final[,4]),sum(tab_final[,5]),NA,NA,sum(tab_final[,8]),
+sum(tab_final[,9]),NA,NA,sum(malos)/sum(total)*100,NA,NA,NA)
+
+stat <- unlist(list(paste("K-S=",round(ks,2)),paste("IV=",round(iv,2))))
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final <- list(tab_final,stat)
+tab_final
+}
+
+###############################################################################
+# Genera la tabla de performance segmentando una variable continua en rangos
+# rango_bins = cantidad de tramos en que queremos dividir la variable continua
+# x = variable independiente
+# y = variable dependiente
+###############################################################################
+
+seg_cont_ran <- function(x,y,rango_bins=(max(x)-min(x))/10){
+library(Hmisc)
+
+rango <- cut2(x,seq(min(x,na.rm=T),max(x,na.rm=T),by=rango_bins))
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1]),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+porc_ac_total <- cumsum(porc_total)
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+porc_des_buenos <- cbind(ordena,cumsum(porc_buenos[order(-porc_ac_buenos)]))
+porc_des_buenos <- porc_des_buenos[order(-porc_des_buenos[,1]),2]
+
+malos <- tab_base[,2]
+malos_ac <- malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+porc_des_malos <- cbind(ordena,cumsum(porc_malos[order(-porc_ac_malos)]))
+porc_des_malos <- porc_des_malos[order(-porc_des_malos[,1]),2]
+prob_malo <- tab_base[,2]/total*100
+tasa_ac_malos <- malos_ac/total_ac*100
+
+lift <- porc_ac_malos/porc_ac_total
+woe <- log(porc_buenos/porc_malos)*100
+ks <- max(abs(porc_ac_buenos - porc_ac_malos))
+iv <- sum((woe/100)*(porc_buenos/100-porc_malos/100))
+
+tab_final <- cbind(total,porc_total,porc_ac_total,buenos,porc_buenos,porc_ac_buenos,porc_des_buenos,
+malos,porc_malos,porc_ac_malos,porc_des_malos,prob_malo,tasa_ac_malos,woe,lift)
+
+colnames(tab_final) <- c("Total","%Tot","%Ac_Tot","Aus","%Aus","%Ac_Aus","%Desac_Aus","Pres","%Pres","%Ac_Pres","%Desac_Pres","Prob_Pres(%)",
+"Tasa_Pres","WOE","Lift")
+
+total_tab <- cbind(sum(tab_final[,1]),sum(tab_final[,2]),NA,sum(tab_final[,4]),sum(tab_final[,5]),NA,NA,sum(tab_final[,8]),
+sum(tab_final[,9]),NA,NA,sum(malos)/sum(total)*100,NA,NA,NA)
+
+stat <- unlist(list(paste("K-S=",round(ks,2)),paste("IV=",round(iv,2))))
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final <- list(tab_final,stat)
+tab_final
+}
+
+######################################################################
+# Genera la tabla de performance a partir de una variable cualitativa
+# x = variable independiente
+# y = variable dependiente
+######################################################################
+
+seg_cat <- function(x,y){
+library(Hmisc)
+
+rango <- factor(x,exclude=NULL)
+ordena <- seq(1:length(unique(rango)))
+tab_base <- cbind(ordena,table(factor(rango,exclude=NULL),y))
+tab_base <- tab_base[order(-tab_base[,1]),2:3]
+
+total <- margin.table(tab_base,1)
+total_ac <- cumsum(total)
+porc_total <- prop.table(total)*100
+porc_ac_total <- cumsum(porc_total)
+
+buenos <- tab_base[,1]
+porc_buenos <- prop.table(buenos)*100
+porc_ac_buenos <- cumsum(porc_buenos)
+porc_des_buenos <- cbind(ordena,cumsum(porc_buenos[order(-porc_ac_buenos)]))
+porc_des_buenos <- porc_des_buenos[order(-porc_des_buenos[,1]),2]
+
+malos <- tab_base[,2]
+malos_ac <- malos_ac <- cumsum(malos)
+porc_malos <- prop.table(malos)*100
+porc_ac_malos <- cumsum(porc_malos)
+porc_des_malos <- cbind(ordena,cumsum(porc_malos[order(-porc_ac_malos)]))
+porc_des_malos <- porc_des_malos[order(-porc_des_malos[,1]),2]
+prob_malo <- tab_base[,2]/total*100
+tasa_ac_malos <- malos_ac/total_ac*100
+
+lift <- porc_ac_malos/porc_ac_total
+woe <- log(porc_buenos/porc_malos)*100
+ks <- max(abs(porc_ac_buenos - porc_ac_malos))
+iv <- sum((woe/100)*(porc_buenos/100-porc_malos/100))
+
+tab_final <- cbind(total,porc_total,porc_ac_total,buenos,porc_buenos,porc_ac_buenos,porc_des_buenos,
+malos,porc_malos,porc_ac_malos,porc_des_malos,prob_malo,tasa_ac_malos,woe,lift)
+
+colnames(tab_final) <- c("Total","%Tot","%Ac_Tot","Aus","%Aus","%Ac_Aus","%Desac_Aus","Pres","%Pres","%Ac_Pres","%Desac_Pres","Prob_Pres(%)",
+"Tasa_Pres","WOE","Lift")
+
+total_tab <- cbind(sum(tab_final[,1]),sum(tab_final[,2]),NA,sum(tab_final[,4]),sum(tab_final[,5]),NA,NA,sum(tab_final[,8]),
+sum(tab_final[,9]),NA,NA,sum(malos)/sum(total)*100,NA,NA,NA)
+
+stat <- unlist(list(paste("K-S=",round(ks,2)),paste("IV=",round(iv,2))))
+tab_final <- round(rbind(tab_final,total_tab),2)
+tab_final <- list(tab_final,stat)
+tab_final
+}
